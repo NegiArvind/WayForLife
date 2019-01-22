@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:gravity="center_vertical"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/wayForLifeImageView"
+        android:layout_width="150sp"
+        android:layout_height="150sp"
+        android:scaleType="fitXY"
+        android:src="@mipmap/ic_launcher"
+        android:layout_centerHorizontal="true"/>
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/wayForLifeImageView"
+        android:text="@string/autodetecting_message"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20sp"
+        android:textColor="@color/md_black_1000"
+        android:textSize="20sp"
+        android:textStyle="bold"/>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textView"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="40sp"/>
+
+    <EditText
+        android:id="@+id/enterOtpEditText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/progressBar"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20sp"
+        android:hint="@string/enter_otp_message"
+        />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/enterOtpEditText"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30sp"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/resendOtpButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="30sp"
+            android:text="@string/resend_otp_message"
+            />
+
+        <Button
+            android:layout_marginStart="30sp"
+            android:id="@+id/signUpButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/btn_signup"
+            />
+
+    </LinearLayout>
+
+
+</RelativeLayout>

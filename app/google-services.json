@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "1094258204474",
+    "firebase_url": "https://wayforlife-c79de.firebaseio.com",
+    "project_id": "wayforlife-c79de",
+    "storage_bucket": "wayforlife-c79de.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1094258204474:android:be265a970959ef7e",
+        "android_client_info": {
+          "package_name": "com.wayforlife"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1094258204474-353t2df987oj77t88h76lirnf82d133l.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBV5m9nAm3tB5aPXm_4iCT1Oeic3d1JzCo"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

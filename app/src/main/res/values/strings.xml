@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">WayForLife</string>
+    <string name="enter_otp_hint">Enter OTP</string>
+    <string name="btn_signup">Sign Up</string>
+    <string name="detecting_otp_text">Auto Detecting the OTP</string>
+    <string name="autodetecting_message">Autodetecting the OTP</string>
+    <string name="enter_otp_message">Enter OTP</string>
+    <string name="resend_otp_message">Resend OTP</string>
+    <string name="number_verified_message">Phone Number Verified</string>
+    <string name="email_hint">Enter your email</string>
+    <string name="password_reset_link">Send password reset link</string>
+
+</resources>

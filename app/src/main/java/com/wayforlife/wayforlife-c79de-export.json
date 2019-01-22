@@ -1,0 +1,40 @@
+{
+  "Users" : {
+    "RlftKOgbPvVuULfjxtBhhTtha3V2" : {
+      "email" : "negiarvind229@gmail.com",
+      "firstName" : "arvind",
+      "password" : "123456",
+      "phoneNumber" : "8126583671"
+    },
+    "1" : {
+      "email" : "negiarvind229@gmail.com",
+      "firstName" : "sohan",
+      "password" : "123456",
+      "phoneNumber" : "8126583671"
+    },
+    "2" : {
+      "email" : "negiarvind229@gmail.com",
+      "firstName" : "ravi",
+      "password" : "123456",
+      "phoneNumber" : "8126583671"
+    },
+    "3" : {
+      "email" : "negiarvind229@gmail.com",
+      "firstName" : "amit",
+      "password" : "123456",
+      "phoneNumber" : "8126583671"
+    },
+    "4" : {
+      "email" : "negiarvind229@gmail.com",
+      "firstName" : "jhulia",
+      "password" : "123456",
+      "phoneNumber" : "8126583671"
+    },
+    "5" : {
+      "email" : "negiarvind229@gmail.com",
+      "firstName" : "arvind",
+      "password" : "123456",
+      "phoneNumber" : "8126583671"
+    }
+  }
+}
