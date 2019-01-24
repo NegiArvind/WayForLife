@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/donate_navigation"
+            android:icon="@drawable/rupee_image"
+            android:checkable="true"
+            android:checked="false"
+            android:title="@string/donate" />
+        <item
+            android:id="@+id/request_blood_navigation"
+            android:icon="@drawable/blood_image"
+            android:checkable="true"
+            android:checked="false"
+            android:title="@string/request_blood" />
+        <item
+            android:id="@+id/about_us_navigation"
+            android:icon="@drawable/about_us_image"
+            android:checkable="true"
+            android:checked="false"
+            android:title="@string/about_us" />
+        <item
+            android:id="@+id/follow_us_navigation"
+            android:icon="@drawable/follow_us_image"
+            android:checkable="true"
+            android:checked="false"
+            android:title="@string/follow_us" />
+    </group>
+
+    <item android:title="@string/others">
+        <menu>
+            <item
+                android:id="@+id/edit_profile_navigation"
+                android:icon="@drawable/edit_profile_image"
+                android:checkable="true"
+                android:checked="false"
+                android:title="@string/edit_profile" />
+            <item
+                android:id="@+id/log_out_navigation_"
+                android:icon="@drawable/log_out_image"
+                android:checkable="true"
+                android:checked="false"
+                android:title="@string/log_out" />
+        </menu>
+    </item>
+
+</menu>

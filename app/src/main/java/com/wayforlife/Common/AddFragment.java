@@ -5,9 +5,9 @@ import android.support.v4.app.FragmentManager;
 
 public class AddFragment {
 
-    public static void AddDifferentFragment(int framLayoutId,Fragment fragment, FragmentManager fragmentManager){
+    public static void AddDifferentFragment(int frameLayoutId,Fragment fragment, FragmentManager fragmentManager){
         if(fragmentManager!=null) {
-            fragmentManager.beginTransaction().replace(framLayoutId, fragment).commit();
+            fragmentManager.beginTransaction().replace(frameLayoutId, fragment).commit();
         }
     }
 }

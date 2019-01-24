@@ -5,12 +5,14 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,6 +46,8 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     private TextView forgetPasswordTextView;
     private EditText forgetEmailEditText;
     private Button sendResetPasswordLinkButton;
+    private ImageView visibilityPasswordImageView;
+    private boolean isPasswordVisible=false;
 
     @Nullable
     @Override
@@ -58,9 +62,11 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         passwordLoginEditText=view.findViewById(R.id.loginPasswordEditText);
         loginButton=view.findViewById(R.id.loginButton);
         forgetPasswordTextView=view.findViewById(R.id.forgetPasswordTextView);
+        visibilityPasswordImageView=view.findViewById(R.id.visibilityPasswordImageView);
 
         loginButton.setOnClickListener(this);
         forgetPasswordTextView.setOnClickListener(this);
+        visibilityPasswordImageView.setOnClickListener(this);
 
         return view;
     }
@@ -75,14 +81,31 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        if(v.getId()==R.id.loginButton){
-            //if entered details are valid then we will sign in the user.
-            if(isDetailsValid()){
-                ProgressUtils.showKProgressDialog(loginActivity);
-                signIn();
-            }
-        }else if(v.getId()==R.id.forgetPasswordTextView){
-            recoverPassword();
+
+        switch (v.getId()) {
+
+            case R.id.loginButton:
+                //if entered details are valid then we will sign in the user.
+                if (isDetailsValid()) {
+                    ProgressUtils.showKProgressDialog(loginActivity);
+                    signIn();
+                }
+                break;
+            case R.id.forgetPasswordTextView:
+                recoverPassword();
+                break;
+
+            case R.id.visibilityPasswordImageView:
+                if(isPasswordVisible){
+                    visibilityPasswordImageView.setImageResource(R.drawable.visibility_off_image);
+                    passwordLoginEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                    isPasswordVisible=false;
+                }else{
+                    visibilityPasswordImageView.setImageResource(R.drawable.visibility_image);
+                    passwordLoginEditText.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+                    isPasswordVisible=true;
+                }
+                break;
         }
     }
 
@@ -114,8 +137,8 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 
 
     /** In below method i am signing the user with email and password. if user entered phone number then using this phone
-     * number i am going to get the email address corresponding to it.This is because, i am login the user to firebase
-     * with the help of email and password */
+     * number i am going to get the email address corresponding to it.This is because, i am authenticating user to firebase
+     * using email and password */
     private void signIn()
     {
         if(isPhoneNumber) {

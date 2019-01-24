@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/wayForLifeImageView"
+            android:layout_width="80sp"
+            android:layout_height="80sp"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="8dp"
+            android:scaleType="fitXY"
+            app:srcCompat="@drawable/ic_launcher_background" />
+
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/bannerCardView"
+            android:layout_marginTop="16dp"
+            android:layout_marginStart="8sp"
+            android:layout_marginEnd="8sp"
+            android:layout_below="@id/wayForLifeImageView"
+            app:cardElevation="8dp"
+            android:layout_width="match_parent"
+            android:layout_height="200sp">
+
+
+                <com.daimajia.slider.library.SliderLayout
+                    android:focusable="true"
+                    android:id="@+id/bannerSliderLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    />
+
+        </android.support.v7.widget.CardView>
+
+        <TextView
+            android:id="@+id/descriptionTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20sp"
+            android:layout_below="@+id/bannerCardView"
+            android:layout_marginStart="8sp"
+            android:layout_marginEnd="8sp"
+            android:textSize="14sp"
+            android:textColor="@color/md_black_1000"
+            android:text="Some description about organisation"/>
+
+
+        <Button
+            android:id="@+id/letsGetStartedButton"
+            android:layout_width="100sp"
+            android:padding="8sp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/descriptionTextView"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="40sp"
+            android:text="Let's Get Started"/>
+
+    </RelativeLayout>
+
+
+</ScrollView>

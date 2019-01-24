@@ -178,9 +178,6 @@ public class VerificationFragment extends Fragment implements View.OnClickListen
                 .show();
     }
 
-    private void goForSignUp() {
-        registerUserWithCredential();
-    }
 
     private void registerUserWithCredential() {
         firebaseAuth.createUserWithEmailAndPassword(user.getEmail(),user.getPassword()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
@@ -192,9 +189,10 @@ public class VerificationFragment extends Fragment implements View.OnClickListen
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if(task.isSuccessful()){
                                 Log.i("Phone number ","linked");
+                                User.setCurrentUser(user);
                                 makeUserEntryIntoFirebaseDatabase();
                                 ProgressUtils.cancelKprogressDialog();
-                                loginActivity.addNewFragment(LoginFragment.newInstance());
+                                loginActivity.addNewFragment(WelcomeFragment.newInstance());
 
                             }else{
                                 firebaseAuth.getCurrentUser().delete().addOnCompleteListener(new OnCompleteListener<Void>() {

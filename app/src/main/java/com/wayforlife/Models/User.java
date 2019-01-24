@@ -8,18 +8,36 @@ public class User {
     public String stateName;
     public String cityName;
     public String password;
+    public String imageUrl;
     public static User currentUser;
 
     public User() {
     }
 
-    public User(String firstName, String lastName, String email, String phoneNumber, String stateName, String cityName, String password) {
+    public User(String firstName, String lastName, String email, String phoneNumber, String stateName, String cityName, String password, String imageUrl) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.phoneNumber = phoneNumber;
         this.stateName = stateName;
         this.cityName = cityName;
+        this.password = password;
+        this.imageUrl = imageUrl;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
         this.password = password;
     }
 
@@ -69,14 +87,6 @@ public class User {
 
     public void setCityName(String cityName) {
         this.cityName = cityName;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public static User getCurrentUser() {
