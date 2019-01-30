@@ -31,7 +31,6 @@ public class LoginActivity extends AppCompatActivity {
             addNewFragment(LoginAndSignUpFragment.newInstance());
         }else{
             saveUserDetail();
-            startActivity(new Intent(LoginActivity.this,HomeActivity.class));
         }
     }
 
@@ -40,7 +39,11 @@ public class LoginActivity extends AppCompatActivity {
                 addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                User user=dataSnapshot.getValue(User.class);
+//                Log.i("user",user.getFirstName());
+//                Log.i("user",user.getEmail());
                 User.setCurrentUser(dataSnapshot.getValue(User.class));
+                startActivity(new Intent(LoginActivity.this,HomeActivity.class));
             }
 
             @Override

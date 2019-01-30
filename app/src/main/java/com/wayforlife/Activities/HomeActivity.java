@@ -2,10 +2,12 @@ package com.wayforlife.Activities;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -19,18 +21,26 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.squareup.picasso.Picasso;
+import com.wayforlife.Common.CommonData;
+import com.wayforlife.Fragments.FeedFragment;
 import com.wayforlife.Fragments.HomeMapFragment;
+import com.wayforlife.Fragments.XyzProblemFragment;
+import com.wayforlife.GlobalStateApplication;
 import com.wayforlife.Models.User;
 import com.wayforlife.R;
 
+import java.util.Objects;
+
 public class HomeActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener,BottomNavigationView.OnNavigationItemSelectedListener {
 
     private ImageView userNavigationImageView;
     private TextView emailNavigationTextView;
     private TextView nameNavigationTextView;
     private NavigationView navigationView;
+    private BottomNavigationView bottomNavigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,13 +64,21 @@ public class HomeActivity extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
+        CommonData.firebaseCurrentUserUid=Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
+
         navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        bottomNavigationView=findViewById(R.id.bottom_navigation_view);
+        bottomNavigationView.setOnNavigationItemSelectedListener(this);
         initializeAndSetHeaderView();
+
         Toast.makeText(getApplicationContext(),"Inside of home activty",Toast.LENGTH_SHORT).show();
 
-        addNewFragment(HomeMapFragment.newInstance());
+//        for(String string:GlobalStateApplication.usersHashMap.keySet()){
+//            Log.i("user id",string);
+//        }
+        addNewFragment(HomeMapFragment.newInstance(),"homeMapFragment");
 
     }
 
@@ -72,10 +90,18 @@ public class HomeActivity extends AppCompatActivity
         nameNavigationTextView=view.findViewById(R.id.userNameTextView);
 
         if(User.getCurrentUser()!=null) {
-            Picasso.with(HomeActivity.this).load(User.getCurrentUser().getImageUrl()).into(userNavigationImageView);
+            if(User.getCurrentUser().getImageUrl()!=null) {
+                Picasso.with(HomeActivity.this).load(User.getCurrentUser().getImageUrl()).into(userNavigationImageView);
+            }else{
+                userNavigationImageView.setImageResource(R.drawable.person_image);
+            }
             emailNavigationTextView.setText(User.getCurrentUser().getEmail());
             nameNavigationTextView.setText(User.getCurrentUser().getFirstName());
         }
+    }
+
+    public void setActionBarTitle(String title){
+        getSupportActionBar().setTitle(title);
     }
 
     @Override
@@ -83,8 +109,8 @@ public class HomeActivity extends AppCompatActivity
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
+        } else if(getSupportFragmentManager().findFragmentByTag(getString(R.string.xyzProblemFragmentTag)) instanceof XyzProblemFragment){
+            addNewFragment(HomeMapFragment.newInstance(),getString(R.string.homeMapFragmentTag));
         }
     }
 
@@ -129,9 +155,12 @@ public class HomeActivity extends AppCompatActivity
             case R.id.log_out_navigation_:
                 break;
             case R.id.home_bottom_navigation:
-                addNewFragment(HomeMapFragment.newInstance());
+                Toast.makeText(HomeActivity.this,"home button pressed",Toast.LENGTH_SHORT).show();
+                addNewFragment(HomeMapFragment.newInstance(),getString(R.string.homeMapFragmentTag));
                 break;
             case R.id.feed_bottom_navigation:
+                Toast.makeText(HomeActivity.this,"feed button pressed",Toast.LENGTH_SHORT).show();
+                addNewFragment(FeedFragment.newInstance(),getString(R.string.feedFragmentTag));
                 break;
             case R.id.notification_bottom_navigation:
                 break;
@@ -144,9 +173,9 @@ public class HomeActivity extends AppCompatActivity
         return true;
     }
 
-    public void addNewFragment(Fragment fragment){
+    public void addNewFragment(Fragment fragment,String tag){
         FragmentManager fragmentManager=getSupportFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.homeFrameLayout,fragment).commit();
+        fragmentManager.beginTransaction().replace(R.id.homeFrameLayout,fragment,tag).commit();
     }
 
 }

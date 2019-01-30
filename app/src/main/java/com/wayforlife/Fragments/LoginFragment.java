@@ -1,6 +1,7 @@
 package com.wayforlife.Fragments;
 
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -20,6 +21,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.wayforlife.Activities.HomeActivity;
 import com.wayforlife.Activities.LoginActivity;
 import com.wayforlife.GlobalStateApplication;
 import com.wayforlife.Models.User;
@@ -87,7 +89,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
             case R.id.loginButton:
                 //if entered details are valid then we will sign in the user.
                 if (isDetailsValid()) {
-                    ProgressUtils.showKProgressDialog(loginActivity);
+                    ProgressUtils.showKProgressDialog(loginActivity,"Login processing...");
                     signIn();
                 }
                 break;
@@ -151,6 +153,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                         if(task.isSuccessful())
                         {
 //                            loginActivity.initCurrentUser();
+                            startActivity(new Intent(getContext(),HomeActivity.class));
                             Toast.makeText(loginActivity, "Signed in successfully!", Toast.LENGTH_SHORT).show();
                             ProgressUtils.cancelKprogressDialog();
 

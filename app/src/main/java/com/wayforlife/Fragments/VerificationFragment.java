@@ -232,7 +232,7 @@ public class VerificationFragment extends Fragment implements View.OnClickListen
             progressBar.setVisibility(View.INVISIBLE);
             phoneAuthCredential = PhoneAuthProvider.getCredential(verificationId, otp);
 //          verificationTextView.setText(getString(R.string.number_verified_message));
-            ProgressUtils.showKProgressDialog(context);
+            ProgressUtils.showKProgressDialog(context,"Getting you in");
             registerUserWithCredential();
         }else{
             Toast.makeText(context,"Please enter valid OTP",Toast.LENGTH_SHORT).show();

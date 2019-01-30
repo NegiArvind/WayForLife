@@ -1,5 +1,7 @@
 package com.wayforlife.Models;
 
+import java.util.HashMap;
+
 public class User {
     public String firstName;
     public String lastName;
@@ -9,12 +11,15 @@ public class User {
     public String cityName;
     public String password;
     public String imageUrl;
+    public HashMap<String,String> likesFeedHashMap;
+
     public static User currentUser;
 
     public User() {
     }
 
-    public User(String firstName, String lastName, String email, String phoneNumber, String stateName, String cityName, String password, String imageUrl) {
+    public User(String firstName, String lastName, String email, String phoneNumber,
+                String stateName, String cityName, String password, String imageUrl, HashMap<String, String> likesFeedHashMap) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -23,6 +28,15 @@ public class User {
         this.cityName = cityName;
         this.password = password;
         this.imageUrl = imageUrl;
+        this.likesFeedHashMap = likesFeedHashMap;
+    }
+
+    public HashMap<String, String> getLikesFeedHashMap() {
+        return likesFeedHashMap;
+    }
+
+    public void setLikesFeedHashMap(HashMap<String, String> likesFeedHashMap) {
+        this.likesFeedHashMap = likesFeedHashMap;
     }
 
     public String getImageUrl() {

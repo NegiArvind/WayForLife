@@ -27,6 +27,18 @@
     <string name="others">Others</string>
     <string name="edit_profile">Edit Profile</string>
     <string name="log_out">Log Out</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="click_here_to_choose_an_image">Click here to choose an image</string>
+    <string name="enter_the_description_of_problem">Enter the description of problem</string>
+    <string name="title">Title</string>
+    <string name="feedFragmentTag">feedFragment</string>
+    <string name="homeMapFragmentTag">homeMapFragment</string>
+    <string name="addPostDialogFragmentTag">addPostDialogFragment</string>
+    <string name="xyzProblemFragmentTag">xyzProblemFragment</string>
+    <string name="enter_the_title_name">Enter the title name</string>
+    <string name="write_your_post_here">Write your post here</string>
+    <string name="addPollDialogFragment">addPollDialogFragment</string>
+    <string name="detailsWithCommentDialogFragment">detailsWithCommentDialogFragment</string>
 
 
 </resources>
