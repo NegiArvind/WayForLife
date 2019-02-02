@@ -23,6 +23,8 @@ public class GlobalStateApplication extends Application {
     public static DatabaseReference usersDatabaseReference;
     public static DatabaseReference problemDatabaseReference;
     public static DatabaseReference feedsDatabaseReference;
+    public static DatabaseReference eventsDatabaseReference;
+    public static DatabaseReference notificationsDatabaseReference;
 
     private FirebaseDatabase firebaseDatabase;
     public static Boolean isFirstTimeMapIsShowing;
@@ -35,6 +37,8 @@ public class GlobalStateApplication extends Application {
         usersDatabaseReference=firebaseDatabase.getReference("Users");
         problemDatabaseReference=firebaseDatabase.getReference("Problems");
         feedsDatabaseReference=firebaseDatabase.getReference("Feeds");
+        eventsDatabaseReference=firebaseDatabase.getReference("Events");
+        notificationsDatabaseReference=firebaseDatabase.getReference("Notifications");
         isFirstTimeMapIsShowing=true;
         getAllUsersDetails();
     }
@@ -55,9 +59,9 @@ public class GlobalStateApplication extends Application {
                     HashMap<String,String> hashMap=dataSnapshot.getValue(User.class).getLikesFeedHashMap();
                     usersHashMap.put(dataSnapshot.getKey(),Objects.requireNonNull(dataSnapshot.getValue(User.class)));
                     Log.i("Changed in application",dataSnapshot.getValue(User.class).getFirstName());
-                    for(String key:hashMap.keySet()){
-                        Log.i("new keys added",hashMap.get(key));
-                    }
+//                    for(String key:hashMap.keySet()){
+//                        Log.i("new keys added",hashMap.get(key));
+//                    }
                 }
             }
 

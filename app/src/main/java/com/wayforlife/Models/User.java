@@ -1,5 +1,6 @@
 package com.wayforlife.Models;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class User {
@@ -18,8 +19,8 @@ public class User {
     public User() {
     }
 
-    public User(String firstName, String lastName, String email, String phoneNumber,
-                String stateName, String cityName, String password, String imageUrl, HashMap<String, String> likesFeedHashMap) {
+    public User(String firstName, String lastName, String email, String phoneNumber, String stateName,
+                String cityName, String password, String imageUrl, HashMap<String, String> likesFeedHashMap) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;

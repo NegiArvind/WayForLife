@@ -39,6 +39,12 @@
     <string name="write_your_post_here">Write your post here</string>
     <string name="addPollDialogFragment">addPollDialogFragment</string>
     <string name="detailsWithCommentDialogFragment">detailsWithCommentDialogFragment</string>
+    <string name="eventFragmentTag">eventFragment</string>
+    <string name="eventDesriptionDialogFragment">eventDescriptionDialogFragment</string>
+    <string name="notificationFragment">notificationFragment</string>
+    <string name="addNotificationDialogFragment">addNotificationDialogFragment</string>
+    <string name="editProfileFragmentTag">editProfileFragment</string>
+    <string name="verificationDialogFragmentTag">verificationDialogFragment</string>
 
 
 </resources>

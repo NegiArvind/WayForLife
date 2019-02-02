@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/md_white_1000"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/appBarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/notificationToolbar"
+            android:layout_width="match_parent"
+            app:navigationIcon="@drawable/back_arrow_image"
+            android:layout_height="wrap_content">
+
+        </android.support.v7.widget.Toolbar>
+
+    </android.support.design.widget.AppBarLayout>
+
+    <ScrollView
+        android:layout_below="@id/appBarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:layout_margin="20sp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/titleNotificationTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="18sp"
+                android:text="@string/title"
+                android:textColor="@color/md_blue_grey_600"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"/>
+
+            <EditText
+                android:id="@+id/titleNotificationEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3sp"
+                android:textColorHint="@color/md_grey_500"
+                android:layout_below="@id/titleNotificationTextView"
+                android:hint="@string/enter_the_title_name"
+                android:textColor="@color/md_black_1000"/>
+
+            <TextView
+                android:id="@+id/descriptionNotificationTextView"
+                android:layout_below="@+id/titleNotificationEditText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="18sp"
+                android:textColor="@color/md_blue_grey_600"
+                android:text="Description"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"/>
+
+            <EditText
+                android:id="@+id/descriptionNotificationEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3sp"
+                android:textColorHint="@color/md_grey_500"
+                android:layout_below="@id/descriptionNotificationTextView"
+                android:hint="Write your description here"
+                android:textColor="@color/md_black_1000"/>
+
+
+            <Spinner
+                android:id="@+id/stateNotificationSpinner"
+                android:layout_marginTop="18sp"
+                android:layout_below="@id/descriptionNotificationEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <Spinner
+                android:id="@+id/cityNotificationSpinner"
+                android:layout_marginTop="18sp"
+                android:layout_below="@id/stateNotificationSpinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+
+            <Button
+                android:id="@+id/createNotificationButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="40sp"
+                android:layout_marginBottom="30sp"
+                android:text="Create"
+                android:layout_below="@id/cityNotificationSpinner"/>
+
+        </RelativeLayout>
+    </ScrollView>
+</RelativeLayout>

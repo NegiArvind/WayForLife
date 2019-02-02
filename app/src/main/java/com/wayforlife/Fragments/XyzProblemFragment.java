@@ -381,7 +381,9 @@ public class XyzProblemFragment extends Fragment implements View.OnClickListener
                     @Override
                     public void onDateSet(DatePicker view, int year,
                                           int monthOfYear, int dayOfMonth) {
-                        dateEditText.setText(dayOfMonth + "/" + (monthOfYear + 1) + "/" + year);
+                        SimpleDateFormat simpleDateFormat=new SimpleDateFormat("dd/MM/yyyy");
+                        calendar.set(year,monthOfYear,dayOfMonth);
+                        dateEditText.setText(simpleDateFormat.format(calendar.getTime()));
                     }
                 }, year, month, day);
         datePickerDialog.show();

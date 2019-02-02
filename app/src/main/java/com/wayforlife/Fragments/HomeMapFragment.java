@@ -30,6 +30,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.wayforlife.Activities.HomeActivity;
 import com.wayforlife.Common.CommonData;
 import com.wayforlife.GlobalStateApplication;
@@ -71,7 +72,6 @@ public class HomeMapFragment extends Fragment implements OnMapReadyCallback,Goog
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         View view=inflater.inflate(R.layout.home_map_fragment,container,false);
-
 
         homeActivity= (HomeActivity) getActivity();
         context=getContext();

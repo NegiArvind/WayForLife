@@ -70,12 +70,9 @@ public class FeedFragment extends Fragment implements View.OnClickListener {
         context=getContext();
         activity=getActivity();
 
-
-
         pollFloatingActionButton=view.findViewById(R.id.pollFloatingActionButton);
         postFloatingActionButton=view.findViewById(R.id.postFloatingActionButton);
         feedProgressBar=view.findViewById(R.id.feedProgressBar);
-        checkIfFeedExistIfExistThenFetchAllFeeds();
 
 
         feedRecyclerView=view.findViewById(R.id.feedRecyclerView);
@@ -101,6 +98,8 @@ public class FeedFragment extends Fragment implements View.OnClickListener {
         feedCustomRecyclerViewArrayAdapter = new FeedCustomRecyclerViewArrayAdapter(context,postPollArrayList, postPollKeyArrayList);
         feedRecyclerView.setAdapter(feedCustomRecyclerViewArrayAdapter);
 
+        checkIfFeedExistIfExistThenFetchAllFeeds();
+
         return view;
     }
 
@@ -109,14 +108,15 @@ public class FeedFragment extends Fragment implements View.OnClickListener {
         FirebaseDatabase.getInstance().getReference().addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if(dataSnapshot.hasChild("Feeds")){
-                    getAllTheFeeds();
-                }else{
+                if(!dataSnapshot.hasChild("Feeds")) {
                     feedProgressBar.setVisibility(View.GONE);
-                    Toast toast=Toast.makeText(context,"There is no any feed",Toast.LENGTH_SHORT);
-                    toast.setGravity(Gravity.CENTER,0,0);
+                    Toast toast = Toast.makeText(context, "There is no any feed", Toast.LENGTH_SHORT);
+                    toast.setGravity(Gravity.CENTER, 0, 0);
                     toast.show();
                 }
+                //Applying listener on feed node at that time also when there is no any feed. Because if someone add new feed then that new feed
+                //will be visible to user only if listener is applied on that node.
+                getAllTheFeeds();
             }
 
             @Override

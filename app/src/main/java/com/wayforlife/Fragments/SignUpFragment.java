@@ -5,7 +5,9 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -138,7 +140,6 @@ public class SignUpFragment extends Fragment implements AdapterView.OnItemSelect
                     isConfirmPasswordVisible=true;
                 }
                 break;
-
         }
     }
 
@@ -180,11 +181,22 @@ public class SignUpFragment extends Fragment implements AdapterView.OnItemSelect
                 user.setStateName(state);
 
                 //if user is new then we will go for verification of number.
-                loginActivity.addNewFragment(VerificationFragment.newInstance(user));
+//                loginActivity.addNewFragment(VerificationFragment.newInstance(user));
+                showDialogFragment(VerificationFragment.newInstance(user,false,null),getString(R.string.verificationDialogFragmentTag));
+
             }else{
                 Toast.makeText(loginActivity,"You are already registered. Please login",Toast.LENGTH_LONG).show();
                 loginActivity.addNewFragment(LoginFragment.newInstance());
             }
+        }
+    }
+
+    private void showDialogFragment(DialogFragment dialogFragment, String tag) {
+        FragmentTransaction fragmentTransaction;
+        if (getFragmentManager() != null) {
+            fragmentTransaction = getFragmentManager().beginTransaction();
+            dialogFragment.show(fragmentTransaction,tag);
+//            fragmentTransaction.add(android.R.id.content,dialogFragment,tag).commit();
         }
     }
 
@@ -366,12 +378,15 @@ public class SignUpFragment extends Fragment implements AdapterView.OnItemSelect
 
                     //Adding state name into stateArrayList
                     stateArrayList.add(jsonObject.getString("state"));
+                    Log.i("states",jsonObject.getString("state"));
 
                     //Below district arraylist will be mapped with its corresponding state
                     stateAndCityHashMap.put(jsonObject.getString("state"),districtArrayList);
 
                 }
-                stateAdapter.notifyDataSetChanged();
+                if(stateAdapter!=null) {
+                    stateAdapter.notifyDataSetChanged();
+                }
             } catch (JSONException e) {
                 e.printStackTrace();
             }

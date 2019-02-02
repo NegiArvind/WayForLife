@@ -71,5 +71,11 @@ dependencies {
 
     //readmoretextview library
     implementation 'com.borjabravo:readmoretextview:2.1.0'
+
+    //CalenderView
+    implementation 'com.applandeo:material-calendar-view:1.4.0'
+
+    //Firebase messaging
+    implementation 'com.google.firebase:firebase-messaging:17.3.4'
 }
 apply plugin: 'com.google.gms.google-services'

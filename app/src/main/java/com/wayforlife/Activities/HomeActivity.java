@@ -1,5 +1,6 @@
 package com.wayforlife.Activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -22,10 +23,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.squareup.picasso.Picasso;
 import com.wayforlife.Common.CommonData;
+import com.wayforlife.Fragments.EditProfileFragment;
+import com.wayforlife.Fragments.EventFragment;
 import com.wayforlife.Fragments.FeedFragment;
 import com.wayforlife.Fragments.HomeMapFragment;
+import com.wayforlife.Fragments.NotificationFragment;
 import com.wayforlife.Fragments.XyzProblemFragment;
 import com.wayforlife.GlobalStateApplication;
 import com.wayforlife.Models.User;
@@ -66,6 +71,10 @@ public class HomeActivity extends AppCompatActivity
 
         CommonData.firebaseCurrentUserUid=Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
 
+
+//        String cityState=GlobalStateApplication.usersHashMap.get(CommonData.firebaseCurrentUserUid).getCityName()+"_"+
+//                GlobalStateApplication.usersHashMap.get(CommonData.firebaseCurrentUserUid).getStateName();
+//        FirebaseMessaging.getInstance().subscribeToTopic(cityState.replace(' ','_'));
         navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
@@ -151,6 +160,7 @@ public class HomeActivity extends AppCompatActivity
             case R.id.follow_us_navigation:
                 break;
             case R.id.edit_profile_navigation:
+                addNewFragment(EditProfileFragment.newInstance(),getString(R.string.editProfileFragmentTag));
                 break;
             case R.id.log_out_navigation_:
                 break;
@@ -163,8 +173,10 @@ public class HomeActivity extends AppCompatActivity
                 addNewFragment(FeedFragment.newInstance(),getString(R.string.feedFragmentTag));
                 break;
             case R.id.notification_bottom_navigation:
+                addNewFragment(NotificationFragment.newInstance(),getString(R.string.notificationFragment));
                 break;
             case R.id.events_bottom_navigation:
+                addNewFragment(EventFragment.newInstance(),getString(R.string.eventFragmentTag));
                 break;
         }
 

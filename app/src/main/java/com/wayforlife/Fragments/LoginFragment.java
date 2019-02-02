@@ -21,6 +21,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.wayforlife.Activities.HomeActivity;
 import com.wayforlife.Activities.LoginActivity;
 import com.wayforlife.GlobalStateApplication;
@@ -50,6 +51,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     private Button sendResetPasswordLinkButton;
     private ImageView visibilityPasswordImageView;
     private boolean isPasswordVisible=false;
+    private String userCity,userState;
 
     @Nullable
     @Override
@@ -69,6 +71,12 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         loginButton.setOnClickListener(this);
         forgetPasswordTextView.setOnClickListener(this);
         visibilityPasswordImageView.setOnClickListener(this);
+
+        User user=GlobalStateApplication.usersHashMap.get(FirebaseAuth.getInstance().getUid());
+        if(user!=null){
+            userCity=user.getCityName();
+            userState=user.getStateName();
+        }
 
         return view;
     }
@@ -153,10 +161,11 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                         if(task.isSuccessful())
                         {
 //                            loginActivity.initCurrentUser();
+                            String cityState=userCity+"_"+userState;
+                            FirebaseMessaging.getInstance().subscribeToTopic(cityState.replace(' ','_'));
                             startActivity(new Intent(getContext(),HomeActivity.class));
                             Toast.makeText(loginActivity, "Signed in successfully!", Toast.LENGTH_SHORT).show();
                             ProgressUtils.cancelKprogressDialog();
-
                         }
                         else
                         {
