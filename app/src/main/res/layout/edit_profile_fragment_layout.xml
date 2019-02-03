@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/editProfileUserImageView"
+            android:layout_marginTop="40sp"
+            android:layout_width="100sp"
+            android:layout_height="100sp"
+            android:src="@drawable/ic_launcher_background"
+            android:layout_centerHorizontal="true"/>
+
+        <TextView
+            android:id="@+id/nameTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="28sp"
+            android:layout_marginStart="24sp"
+            android:layout_marginEnd="24sp"
+            android:layout_below="@id/editProfileUserImageView"
+            android:text="First Name"/>
+
+        <EditText
+            android:id="@+id/editProfileFirstNameEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/nameTextView"
+            android:layout_marginTop="8sp"
+            android:layout_marginStart="24sp"
+            android:layout_marginEnd="24sp"
+            android:ems="10"
+            android:maxLines="1"
+            android:hint="First Name"
+            android:inputType="textPersonName" />
+
+
+        <TextView
+            android:id="@+id/lastNameTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8sp"
+            android:layout_marginStart="24sp"
+            android:layout_marginEnd="24sp"
+            android:layout_below="@id/editProfileFirstNameEditText"
+            android:text="Last Name"/>
+
+        <EditText
+            android:id="@+id/editProfileLastNameEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/lastNameTextView"
+            android:layout_marginTop="8sp"
+            android:layout_marginStart="24sp"
+            android:layout_marginEnd="24sp"
+            android:ems="10"
+            android:maxLines="1"
+            android:hint="Last Name"
+            android:inputType="textPersonName" />
+
+
+        <TextView
+            android:id="@+id/phoneNumberTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8sp"
+            android:layout_marginStart="24sp"
+            android:layout_marginEnd="24sp"
+            android:layout_below="@id/editProfileLastNameEditText"
+            android:text="Mobile Number"/>
+
+        <EditText
+            android:id="@+id/editProfilePhoneNumberEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/phoneNumberTextView"
+            android:layout_marginTop="8sp"
+            android:layout_marginStart="24sp"
+            android:layout_marginEnd="24sp"
+            android:ems="10"
+            android:maxLines="1"
+            android:hint="Mobile Number"
+            android:inputType="phone" />
+
+        <TextView
+            android:id="@+id/stateTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8sp"
+            android:layout_marginStart="24sp"
+            android:layout_marginEnd="24sp"
+            android:layout_below="@id/editProfilePhoneNumberEditText"
+            android:text="State"/>
+
+        <Spinner
+            android:id="@+id/editProfilestateSpinner"
+            android:layout_marginTop="8sp"
+            android:layout_marginStart="24sp"
+            android:layout_marginEnd="24sp"
+            android:layout_below="@id/stateTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:id="@+id/cityTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8sp"
+            android:layout_marginStart="24sp"
+            android:layout_marginEnd="24sp"
+            android:layout_below="@id/editProfilestateSpinner"
+            android:text="City"/>
+
+        <Spinner
+            android:id="@+id/editProfileCitySpinner"
+            android:layout_marginTop="8sp"
+            android:layout_marginStart="24sp"
+            android:layout_marginEnd="24sp"
+            android:layout_below="@id/cityTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <Button
+            android:id="@+id/editPrifleSubmitButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Submit"
+            android:padding="4sp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="30sp"
+            android:layout_marginBottom="30sp"
+            android:layout_below="@id/editProfileCitySpinner"/>
+
+    </RelativeLayout>
+</ScrollView>

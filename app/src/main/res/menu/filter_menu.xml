@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+        <item
+            android:title="Filter">
+
+            <menu>
+                <group
+                    android:checkableBehavior="single">
+                    <item
+                        android:id="@+id/postFilterMenu"
+                        android:checkable="true"
+                        android:checked="false"
+                        android:title="Post"/>
+
+                    <item
+                        android:id="@+id/pollFilterMenu"
+                        android:checkable="true"
+                        android:checked="false"
+                        android:title="Poll"/>
+
+                    <item
+                        android:id="@+id/defaultFilterMenu"
+                        android:checkable="true"
+                        android:checked="false"
+                        android:title="Default"/>
+
+                </group>
+
+            </menu>
+        </item>
+
+
+</menu>

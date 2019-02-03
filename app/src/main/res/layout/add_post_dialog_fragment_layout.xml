@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:background="@color/md_white_1000"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/appBarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/addPostToolbar"
+            android:layout_width="match_parent"
+            app:navigationIcon="@drawable/back_arrow_image"
+            android:layout_height="wrap_content">
+        </android.support.v7.widget.Toolbar>
+
+    </android.support.design.widget.AppBarLayout>
+
+
+    <ScrollView
+        android:layout_below="@+id/appBarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+        <RelativeLayout
+            android:layout_margin="20sp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/titlePostTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10sp"
+                android:text="@string/title"
+                android:textColor="@color/md_blue_grey_600"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"/>
+
+            <EditText
+                android:id="@+id/titlePostEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3sp"
+                android:textColorHint="@color/md_grey_500"
+                android:layout_below="@id/titlePostTextView"
+                android:hint="@string/enter_the_title_name"
+                android:textColor="@color/md_black_1000"/>
+
+            <TextView
+                android:id="@+id/descriptionPostTextView"
+                android:layout_below="@+id/titlePostEditText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10sp"
+                android:textColor="@color/md_blue_grey_600"
+                android:text="Post"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"/>
+
+            <EditText
+                android:id="@+id/descriptionPostEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3sp"
+                android:textColorHint="@color/md_grey_500"
+                android:layout_below="@id/descriptionPostTextView"
+                android:hint="@string/write_your_post_here"
+                android:maxLength="250"
+                android:textColor="@color/md_black_1000"/>
+
+            <TextView
+                android:id="@+id/postLetterCountingTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/descriptionPostEditText"
+                android:text="0/150"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
+                android:textColor="@color/md_grey_500"
+                android:layout_marginTop="3sp"
+                android:layout_alignEnd="@id/descriptionPostEditText"
+                android:layout_marginEnd="10sp"/>
+
+
+            <Button
+                android:id="@+id/postButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10sp"
+                android:layout_marginTop="60sp"
+                android:layout_marginBottom="30sp"
+                android:text="Post"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@id/postLetterCountingTextView"/>
+
+
+        </RelativeLayout>
+
+    </ScrollView>
+</RelativeLayout>

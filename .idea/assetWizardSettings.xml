@@ -18,7 +18,7 @@
                                 <PersistentState>
                                   <option name="values">
                                     <map>
-                                      <entry key="url" value="jar:file:/home/arvind/Downloads/Compressed/android-studio-ide-181.5056338-linux/android-studio/plugins/android/lib/android.jar!/images/material_design_icons/action/ic_visibility_off_black_24dp.xml" />
+                                      <entry key="url" value="jar:file:/home/arvind/Downloads/Compressed/android-studio-ide-181.5056338-linux/android-studio/plugins/android/lib/android.jar!/images/material_design_icons/notification/ic_event_note_black_24dp.xml" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -28,7 +28,7 @@
                         </option>
                         <option name="values">
                           <map>
-                            <entry key="outputName" value="visibility_off_image" />
+                            <entry key="outputName" value="event_note_image" />
                             <entry key="sourceFile" value="$USER_HOME$" />
                           </map>
                         </option>

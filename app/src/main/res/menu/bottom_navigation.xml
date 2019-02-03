@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/home_bottom_navigation"
+        android:title="@string/home"
+        android:icon="@drawable/home_image"
+        />
+
+    <item
+        android:id="@+id/feed_bottom_navigation"
+        android:title="@string/feed"
+        android:icon="@drawable/feed_image"
+        />
+
+
+    <item
+        android:id="@+id/events_bottom_navigation"
+        android:title="@string/events"
+        android:icon="@drawable/event_image"
+        />
+
+
+    <item
+        android:id="@+id/notification_bottom_navigation"
+        android:title="@string/notifications"
+        android:icon="@drawable/notifications_image"
+        />
+
+
+</menu>

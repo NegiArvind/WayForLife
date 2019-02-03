@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/md_white_1000"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/appBarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/addPollToolbar"
+            android:layout_width="match_parent"
+            app:navigationIcon="@drawable/back_arrow_image"
+            android:layout_height="wrap_content">
+        </android.support.v7.widget.Toolbar>
+
+    </android.support.design.widget.AppBarLayout>
+
+    <ScrollView
+        android:layout_below="@id/appBarLayout"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:layout_margin="20sp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/titlePollTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10sp"
+                android:text="@string/title"
+                android:textColor="@color/md_blue_grey_600"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"/>
+
+            <EditText
+                android:id="@+id/titlePollEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3sp"
+                android:textColorHint="@color/md_grey_500"
+                android:layout_below="@id/titlePollTextView"
+                android:hint="@string/enter_the_title_name"
+                android:textColor="@color/md_black_1000"/>
+
+            <TextView
+                android:id="@+id/contentPollTextView"
+                android:layout_below="@+id/titlePollEditText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10sp"
+                android:textColor="@color/md_blue_grey_600"
+                android:text="Content"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"/>
+
+            <EditText
+                android:id="@+id/contentPollEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3sp"
+                android:textColorHint="@color/md_grey_500"
+                android:layout_below="@id/contentPollTextView"
+                android:hint="Write your content here"
+                android:textColor="@color/md_black_1000"/>
+
+            <TextView
+                android:id="@+id/optionOnePollTextView"
+                android:layout_below="@+id/contentPollEditText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10sp"
+                android:textColor="@color/md_blue_grey_600"
+                android:text="Option 1"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"/>
+
+            <EditText
+                android:id="@+id/optionOnePollEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3sp"
+                android:textColorHint="@color/md_grey_500"
+                android:layout_below="@id/optionOnePollTextView"
+                android:hint="Enter your first choice here"
+                android:maxLength="150"
+                android:textColor="@color/md_black_1000"/>
+
+            <TextView
+                android:id="@+id/optionTwoPollTextView"
+                android:layout_below="@+id/optionOnePollEditText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10sp"
+                android:textColor="@color/md_blue_grey_600"
+                android:text="Option 2"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"/>
+
+            <EditText
+                android:id="@+id/optionTwoPollEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3sp"
+                android:textColorHint="@color/md_grey_500"
+                android:layout_below="@id/optionTwoPollTextView"
+                android:hint="Enter Your second choice here"
+                android:maxLength="150"
+                android:textColor="@color/md_black_1000"/>
+
+            <Button
+                android:id="@+id/pollSubmitButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10sp"
+                android:layout_marginTop="60sp"
+                android:layout_marginBottom="30sp"
+                android:text="Submit"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@id/optionTwoPollEditText"/>
+
+
+
+        </RelativeLayout>
+
+    </ScrollView>
+</RelativeLayout>
