@@ -19,7 +19,7 @@ import java.util.Objects;
 
 public class GlobalStateApplication extends Application {
 
-    public static Map<String,User> usersHashMap=new HashMap<>();
+//    public static Map<String,User> usersHashMap=new HashMap<>();
     public static DatabaseReference usersDatabaseReference;
     public static DatabaseReference problemDatabaseReference;
     public static DatabaseReference feedsDatabaseReference;
@@ -40,45 +40,45 @@ public class GlobalStateApplication extends Application {
         eventsDatabaseReference=firebaseDatabase.getReference("Events");
         notificationsDatabaseReference=firebaseDatabase.getReference("Notifications");
         isFirstTimeMapIsShowing=true;
-        getAllUsersDetails();
+//        getAllUsersDetails();
     }
 
-    private void getAllUsersDetails() {
-//        usersArrayList=new ArrayList<>();
-        usersDatabaseReference.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                if(dataSnapshot.getKey()!=null) {
-                    usersHashMap.put(dataSnapshot.getKey(), Objects.requireNonNull(dataSnapshot.getValue(User.class)));
-                }
-            }
-
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                if(dataSnapshot.getKey()!=null){
-                    HashMap<String,String> hashMap=dataSnapshot.getValue(User.class).getLikesFeedHashMap();
-                    usersHashMap.put(dataSnapshot.getKey(),Objects.requireNonNull(dataSnapshot.getValue(User.class)));
-                    Log.i("Changed in application",dataSnapshot.getValue(User.class).getFirstName());
-//                    for(String key:hashMap.keySet()){
-//                        Log.i("new keys added",hashMap.get(key));
-//                    }
-                }
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-    }
+//    private void getAllUsersDetails() {
+////        usersArrayList=new ArrayList<>();
+//        usersDatabaseReference.addChildEventListener(new ChildEventListener() {
+//            @Override
+//            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+//                if(dataSnapshot.getKey()!=null) {
+//                    usersHashMap.put(dataSnapshot.getKey(), Objects.requireNonNull(dataSnapshot.getValue(User.class)));
+//                }
+//            }
+//
+//            @Override
+//            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+//                if(dataSnapshot.getKey()!=null){
+//                    HashMap<String,String> hashMap=dataSnapshot.getValue(User.class).getLikesFeedHashMap();
+//                    usersHashMap.put(dataSnapshot.getKey(),Objects.requireNonNull(dataSnapshot.getValue(User.class)));
+//                    Log.i("Changed in application",dataSnapshot.getValue(User.class).getFirstName());
+////                    for(String key:hashMap.keySet()){
+////                        Log.i("new keys added",hashMap.get(key));
+////                    }
+//                }
+//            }
+//
+//            @Override
+//            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+//
+//            }
+//
+//            @Override
+//            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+//
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//            }
+//        });
+//    }
 }

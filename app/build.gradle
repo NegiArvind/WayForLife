@@ -77,5 +77,9 @@ dependencies {
 
     //Firebase messaging
     implementation 'com.google.firebase:firebase-messaging:17.3.4'
+
+    //Firebase recyclerView ui adapter
+    implementation 'com.firebaseui:firebase-ui-database:1.2.0'
+
 }
 apply plugin: 'com.google.gms.google-services'

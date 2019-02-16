@@ -9,9 +9,13 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 import com.wayforlife.GlobalStateApplication;
 import com.wayforlife.Models.Comment;
+import com.wayforlife.Models.User;
 import com.wayforlife.R;
 
 import java.util.ArrayList;
@@ -37,17 +41,39 @@ public class CommentCustomArrayAdapter extends RecyclerView.Adapter<CommentCusto
     }
 
     @Override
-    public void onBindViewHolder(@NonNull CommentViewHolder commentViewHolder, int i) {
+    public void onBindViewHolder(@NonNull final CommentViewHolder commentViewHolder, final int i) {
         //Binding comments on viewholder
-        String imageUrl=Objects.requireNonNull(GlobalStateApplication.usersHashMap.get(commentArrayList.get(i).getUserId())).getImageUrl();
-        if(imageUrl!=null){
-            Picasso.with(context).load(imageUrl).into(commentViewHolder.commentUserImageView);
-        }else{
-            commentViewHolder.commentUserImageView.setImageResource(R.drawable.person_image);
-        }
-        commentViewHolder.timeDateCommentTextView.setText(commentArrayList.get(i).getTimeDate());
-        commentViewHolder.commentorNameTextView.setText(GlobalStateApplication.usersHashMap.get(commentArrayList.get(i).getUserId()).getFirstName());
-        commentViewHolder.commentTextView.setText(commentArrayList.get(i).getCommentedMessage());
+        GlobalStateApplication.usersDatabaseReference.child(commentArrayList.get(i).getUserId()).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                User commentUser=dataSnapshot.getValue(User.class);
+                if(commentUser!=null) {
+                    String imageUrl = commentUser.getImageUrl();
+                    if (imageUrl != null) {
+                        Picasso.with(context).load(imageUrl).into(commentViewHolder.commentUserImageView);
+                    } else {
+                        commentViewHolder.commentUserImageView.setImageResource(R.drawable.person_image);
+                    }
+                    commentViewHolder.timeDateCommentTextView.setText(commentArrayList.get(commentViewHolder.getAdapterPosition()).getTimeDate());
+                    commentViewHolder.commentorNameTextView.setText(commentUser.getFirstName());
+                    commentViewHolder.commentTextView.setText(commentArrayList.get(commentViewHolder.getAdapterPosition()).getCommentedMessage());
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+//        String imageUrl=Objects.requireNonNull(GlobalStateApplication.usersHashMap.get(commentArrayList.get(i).getUserId())).getImageUrl();
+//        if(imageUrl!=null){
+//            Picasso.with(context).load(imageUrl).into(commentViewHolder.commentUserImageView);
+//        }else{
+//            commentViewHolder.commentUserImageView.setImageResource(R.drawable.person_image);
+//        }
+//        commentViewHolder.timeDateCommentTextView.setText(commentArrayList.get(i).getTimeDate());
+//        commentViewHolder.commentorNameTextView.setText(GlobalStateApplication.usersHashMap.get(commentArrayList.get(i).getUserId()).getFirstName());
+//        commentViewHolder.commentTextView.setText(commentArrayList.get(i).getCommentedMessage());
     }
 
     @Override

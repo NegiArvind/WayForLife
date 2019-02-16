@@ -12,6 +12,7 @@ public class User {
     public String cityName;
     public String password;
     public String imageUrl;
+    public boolean isAdmin;
     public HashMap<String,String> likesFeedHashMap;
 
     public static User currentUser;
@@ -20,7 +21,7 @@ public class User {
     }
 
     public User(String firstName, String lastName, String email, String phoneNumber, String stateName,
-                String cityName, String password, String imageUrl, HashMap<String, String> likesFeedHashMap) {
+                String cityName, String password, String imageUrl, boolean isAdmin, HashMap<String, String> likesFeedHashMap) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -29,7 +30,16 @@ public class User {
         this.cityName = cityName;
         this.password = password;
         this.imageUrl = imageUrl;
+        this.isAdmin = isAdmin;
         this.likesFeedHashMap = likesFeedHashMap;
+    }
+
+    public boolean isAdmin() {
+        return isAdmin;
+    }
+
+    public void setAdmin(boolean admin) {
+        isAdmin = admin;
     }
 
     public HashMap<String, String> getLikesFeedHashMap() {

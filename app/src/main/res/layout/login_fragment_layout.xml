@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -9,13 +10,13 @@
 
     <ImageView
         android:id="@+id/wayForLifeImageView"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="130dp"
+        android:layout_height="130dp"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="30dp"
         android:scaleType="fitXY"
-        app:srcCompat="@drawable/ic_launcher_background" />
+        android:src="@drawable/way_for_life_logo"/>
 
     <RelativeLayout
         android:layout_below="@id/wayForLifeImageView"
@@ -23,41 +24,61 @@
         android:gravity="center_vertical"
         android:layout_height="match_parent">
 
-        <EditText
-            android:id="@+id/loginEmailEditText"
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/loginEmailTextInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="24sp"
-            android:layout_marginEnd="24sp"
-            android:ems="10"
-            android:maxLines="1"
-            android:hint="@string/email_hint"
-            android:inputType="textEmailAddress" />
+            android:layout_marginEnd="24sp">
+
+            <EditText
+                android:drawableStart="@drawable/email_image"
+                android:id="@+id/loginEmailEditText"
+                android:layout_width="match_parent"
+                android:drawablePadding="10sp"
+                android:layout_height="match_parent"
+                android:ems="10"
+                android:maxLines="1"
+                android:hint="@string/email_hint"
+                android:inputType="textEmailAddress" />
+
+        </android.support.design.widget.TextInputLayout>
+
 
         <RelativeLayout
             android:id="@+id/passwordRelativeLayout"
-            android:layout_below="@id/loginEmailEditText"
+            android:layout_below="@id/loginEmailTextInputLayout"
             android:layout_width="match_parent"
-            android:layout_marginTop="40sp"
+            android:layout_marginTop="23sp"
             android:layout_height="wrap_content">
 
-
-            <EditText
-                android:id="@+id/loginPasswordEditText"
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/loginPasswordTextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="24sp"
-                android:layout_marginEnd="24sp"
-                android:ems="10"
-                android:maxLines="1"
-                android:hint="Confirm Password"
-                android:inputType="textPassword" />
+                android:layout_marginEnd="24sp">
+
+                <EditText
+                    android:id="@+id/loginPasswordEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="10sp"
+                    android:drawableStart="@drawable/password_image"
+                    android:ems="10"
+                    android:maxLines="1"
+                    android:hint="@string/passwordHint"
+                    android:inputType="textPassword" />
+
+            </android.support.design.widget.TextInputLayout>
+
 
             <ImageView
                 android:id="@+id/visibilityPasswordImageView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignEnd="@id/loginPasswordEditText"
+                android:layout_alignEnd="@id/loginPasswordTextInputLayout"
                 android:layout_centerVertical="true"
                 android:src="@drawable/visibility_off_image"/>
 
@@ -66,24 +87,31 @@
 
         <Button
             android:id="@+id/loginButton"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_marginStart="80sp"
+            android:layout_marginEnd="80sp"
             android:layout_height="wrap_content"
+            android:padding="4sp"
             android:layout_below="@id/passwordRelativeLayout"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="40sp"
-            android:text="Login" />
+            android:textStyle="bold"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+            android:textColor="@color/md_white_1000"
+            android:background="@drawable/button_gradient_round_shape"
+            android:text="@string/loginButtonText" />
 
         <TextView
             android:id="@+id/forgetPasswordTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/loginButton"
-            android:layout_marginTop="12sp"
+            android:layout_marginTop="16sp"
             android:gravity="center_horizontal"
             android:layout_centerHorizontal="true"
             android:ems="10"
             android:maxLines="1"
-            android:textColor="@color/md_blue_500"
+            android:textColor="@color/colorPrimary"
             android:text="Forgot Password ?"/>
 
     </RelativeLayout>

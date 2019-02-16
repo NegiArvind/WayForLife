@@ -1,6 +1,9 @@
 package com.wayforlife.Activities;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -35,6 +38,7 @@ import com.wayforlife.Fragments.XyzProblemFragment;
 import com.wayforlife.GlobalStateApplication;
 import com.wayforlife.Models.User;
 import com.wayforlife.R;
+import com.wayforlife.Utils.ProgressUtils;
 
 import java.util.Objects;
 
@@ -87,6 +91,7 @@ public class HomeActivity extends AppCompatActivity
 //        for(String string:GlobalStateApplication.usersHashMap.keySet()){
 //            Log.i("user id",string);
 //        }
+        bottomNavigationView.setSelectedItemId(R.id.home_bottom_navigation);
         addNewFragment(HomeMapFragment.newInstance(),"homeMapFragment");
 
     }
@@ -118,32 +123,47 @@ public class HomeActivity extends AppCompatActivity
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else if(getSupportFragmentManager().findFragmentByTag(getString(R.string.xyzProblemFragmentTag)) instanceof XyzProblemFragment){
+        } else if(getSupportFragmentManager().findFragmentByTag(getString(R.string.xyzProblemFragmentTag)) instanceof XyzProblemFragment
+                ||getSupportFragmentManager().findFragmentByTag(getString(R.string.editProfileFragmentTag)) instanceof EditProfileFragment){
             addNewFragment(HomeMapFragment.newInstance(),getString(R.string.homeMapFragmentTag));
+            bottomNavigationView.setSelectedItemId(R.id.home_bottom_navigation);
+        }else{
+            showExitAlertDialog();
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.home, menu);
-        return true;
+    private void showExitAlertDialog() {
+        new AlertDialog.Builder(this)
+                .setTitle("Exit")
+                .setMessage("Are you sure you want to exit?")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        finish();
+                        finishAffinity();
+                        dialog.dismiss();
+                    }
+                })
+                .setNegativeButton("No",null)
+                .show();
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        // Inflate the menu; this adds items to the action bar if it is present.
+////        getMenuInflater().inflate(R.menu.home, menu);
+//        return true;
+//    }
+//
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        // Handle action bar item clicks here. The action bar will
+//        // automatically handle clicks on the Home/Up button, so long
+//        // as you specify a parent activity in AndroidManifest.xml.
+//        int id = item.getItemId();
+//
+//        return super.onOptionsItemSelected(item);
+//    }
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
@@ -152,17 +172,21 @@ public class HomeActivity extends AppCompatActivity
         switch (item.getItemId()){
 
             case R.id.donate_navigation:
+                moveToWebPage(CommonData.donateUrl);
                 break;
             case R.id.request_blood_navigation:
+                moveToWebPage(CommonData.requestBloodUrl);
                 break;
             case R.id.about_us_navigation:
                 break;
             case R.id.follow_us_navigation:
+                showFollowUsDialog();
                 break;
             case R.id.edit_profile_navigation:
                 addNewFragment(EditProfileFragment.newInstance(),getString(R.string.editProfileFragmentTag));
                 break;
             case R.id.log_out_navigation_:
+                showLogOutAlertDialog();
                 break;
             case R.id.home_bottom_navigation:
                 Toast.makeText(HomeActivity.this,"home button pressed",Toast.LENGTH_SHORT).show();
@@ -183,6 +207,37 @@ public class HomeActivity extends AppCompatActivity
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void moveToWebPage(String url) {
+        Intent intent=new Intent(Intent.ACTION_VIEW);
+        intent.setData(Uri.parse(url));
+        startActivity(intent);
+
+    }
+
+
+    private void showFollowUsDialog() {
+        new AlertDialog.Builder(HomeActivity.this)
+                .setTitle("Follow Us")
+                .show();
+    }
+
+    private void showLogOutAlertDialog() {
+        new AlertDialog.Builder(this)
+                .setTitle("Log Out")
+                .setMessage("Are you sure you want to log out?")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        FirebaseAuth.getInstance().signOut();
+                        Intent intent=new Intent(HomeActivity.this,LoginActivity.class);
+                        startActivity(new Intent(intent));
+                        dialog.dismiss();
+                    }
+                })
+                .setNegativeButton("No",null)
+                .show();
     }
 
     public void addNewFragment(Fragment fragment,String tag){

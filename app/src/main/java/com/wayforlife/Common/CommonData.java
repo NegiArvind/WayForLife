@@ -13,8 +13,10 @@ public class CommonData {
     public static String firebaseCurrentUserUid;
     public static String firstPatternWord="~@$&";
     public static String secondPatternWord="&$@~";
-    public static boolean isAdmin=true;
+    public static boolean isAdmin=false;
     public static final String[] months={"Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"};
+    public static String donateUrl="https://milaap.org/fundraisers/wayforlife?utm_source=shorturl";
+    public static String requestBloodUrl="https://google.com";
 
     public static String getCurrentTime() {
         Calendar calendar = Calendar.getInstance();

@@ -7,7 +7,7 @@
     <string name="enter_otp_message">Enter OTP</string>
     <string name="resend_otp_message">Resend OTP</string>
     <string name="number_verified_message">Phone Number Verified</string>
-    <string name="email_hint">Enter your email</string>
+    <string name="email_hint">Email</string>
     <string name="password_reset_link">Send password reset link</string>
     <string name="title_activity_home">HomeActivity</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
@@ -45,6 +45,13 @@
     <string name="addNotificationDialogFragment">addNotificationDialogFragment</string>
     <string name="editProfileFragmentTag">editProfileFragment</string>
     <string name="verificationDialogFragmentTag">verificationDialogFragment</string>
+    <string name="welcomeFragmentTag">welcomeFragmentTag</string>
+    <string name="loginAndSignUpFragmentTag">loginAndSignUpFragmentTag</string>
+    <string name="loginFragmentTag">loginFragmentTag</string>
+    <string name="signUpFragmentTag">signUpFragmentTag</string>
+    <string name="passwordHint">Password</string>
+    <string name="loginButtonText">LOGIN</string>
+    <string name="sign_up_button_text">SIGN UP</string>
 
 
 </resources>

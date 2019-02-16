@@ -150,7 +150,7 @@ public class EditProfileFragment extends Fragment implements AdapterView.OnItemS
 
         startExecutingAsynckTask();
 
-        user=GlobalStateApplication.usersHashMap.get(CommonData.firebaseCurrentUserUid);
+        user=User.getCurrentUser();
         if(user!=null){
             setAllDetails();
         }
@@ -564,4 +564,11 @@ public class EditProfileFragment extends Fragment implements AdapterView.OnItemS
     public void onNothingSelected(AdapterView<?> parent) {
 
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        homeActivity.setActionBarTitle("Edit Profile");
+    }
+
 }

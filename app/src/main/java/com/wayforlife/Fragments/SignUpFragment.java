@@ -21,6 +21,10 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.SignInMethodQueryResult;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
@@ -30,6 +34,7 @@ import com.wayforlife.GlobalStateApplication;
 import com.wayforlife.Models.User;
 import com.wayforlife.R;
 import com.wayforlife.Utils.AuthUtil;
+import com.wayforlife.Utils.ProgressUtils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -41,6 +46,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Objects;
 
 /** This fragment is used for signUp the user */
 public class SignUpFragment extends Fragment implements AdapterView.OnItemSelectedListener,View.OnClickListener {
@@ -168,26 +174,59 @@ public class SignUpFragment extends Fragment implements AdapterView.OnItemSelect
 
     private void verifyAndSendOtp() {
         if(isAllDetailsCorrect()){
-            if(!isUserAlreadyExist()){
+            ProgressUtils.showKProgressDialog(context,"Getting you in..");
+            FirebaseAuth.getInstance().fetchSignInMethodsForEmail(email).addOnCompleteListener(new OnCompleteListener<SignInMethodQueryResult>() {
+                @Override
+                public void onComplete(@NonNull Task<SignInMethodQueryResult> task) {
+                    if(task.isSuccessful()){
+                        ArrayList<String> arrayList;
+                        arrayList=(ArrayList<String>) Objects.requireNonNull(task.getResult()).getSignInMethods();
+                        //if the size is zero it means this email is not authenticated with the firebase
+                        if(arrayList.size()==0){
 
-                User user=new User();
-                user.setFirstName(firstName);
-                if(lastNameEditText.getText().toString().trim().length()!=0)
-                user.setLastName(lastNameEditText.getText().toString());
-                user.setPassword(password);
-                user.setEmail(email);
-                user.setPhoneNumber(number);
-                user.setCityName(city);
-                user.setStateName(state);
+                            User user=new User();
+                            user.setFirstName(firstName);
+                            if(lastNameEditText.getText().toString().trim().length()!=0)
+                                user.setLastName(lastNameEditText.getText().toString());
+                            user.setPassword(password);
+                            user.setEmail(email);
+                            user.setPhoneNumber(number);
+                            user.setCityName(city);
+                            user.setStateName(state);
 
-                //if user is new then we will go for verification of number.
-//                loginActivity.addNewFragment(VerificationFragment.newInstance(user));
-                showDialogFragment(VerificationFragment.newInstance(user,false,null),getString(R.string.verificationDialogFragmentTag));
+//                            if user is new then we will go for verification of number.
+//                            loginActivity.addNewFragment(VerificationFragment.newInstance(user));
+                            ProgressUtils.cancelKprogressDialog();
+                            showDialogFragment(VerificationFragment.newInstance(user,false,null),getString(R.string.verificationDialogFragmentTag));
 
-            }else{
-                Toast.makeText(loginActivity,"You are already registered. Please login",Toast.LENGTH_LONG).show();
-                loginActivity.addNewFragment(LoginFragment.newInstance());
-            }
+                        }else{
+                            ProgressUtils.cancelKprogressDialog();
+                            Toast.makeText(loginActivity,"You are already registered. Please login",Toast.LENGTH_LONG).show();
+                            loginActivity.addNewFragment(LoginFragment.newInstance(),getString(R.string.loginFragmentTag));
+                        }
+                    }
+                }
+            });
+//            if(!isUserAlreadyExist()){
+//
+//                User user=new User();
+//                user.setFirstName(firstName);
+//                if(lastNameEditText.getText().toString().trim().length()!=0)
+//                user.setLastName(lastNameEditText.getText().toString());
+//                user.setPassword(password);
+//                user.setEmail(email);
+//                user.setPhoneNumber(number);
+//                user.setCityName(city);
+//                user.setStateName(state);
+//
+//                //if user is new then we will go for verification of number.
+////                loginActivity.addNewFragment(VerificationFragment.newInstance(user));
+//                showDialogFragment(VerificationFragment.newInstance(user,false,null),getString(R.string.verificationDialogFragmentTag));
+//
+//            }else{
+//                Toast.makeText(loginActivity,"You are already registered. Please login",Toast.LENGTH_LONG).show();
+//                loginActivity.addNewFragment(LoginFragment.newInstance());
+//            }
         }
     }
 
@@ -200,19 +239,19 @@ public class SignUpFragment extends Fragment implements AdapterView.OnItemSelect
         }
     }
 
-    private boolean isUserAlreadyExist() {
-
-        for(User user:GlobalStateApplication.usersHashMap.values()){
-
-            /** if entered email or mobile number matched with the email or number present in users database
-            then it means users has already sign up.*/
-
-            if(user.getEmail().equals(email)||user.getPhoneNumber().equals(number)){
-                return true;
-            }
-        }
-        return false;
-    }
+//    private boolean isUserAlreadyExist() {
+//
+//        for(User user:GlobalStateApplication.usersHashMap.values()){
+//
+//            /** if entered email or mobile number matched with the email or number present in users database
+//            then it means users has already sign up.*/
+//
+//            if(user.getEmail().equals(email)||user.getPhoneNumber().equals(number)){
+//                return true;
+//            }
+//        }
+//        return false;
+//    }
 
     private boolean isAllDetailsCorrect() {
         firstName=firstNameEditText.getText().toString().trim();
@@ -221,19 +260,19 @@ public class SignUpFragment extends Fragment implements AdapterView.OnItemSelect
         password=passwordEditText.getText().toString();
         confirmPassword=confirmPasswordEditText.getText().toString();
         if(firstName.equals("")){
-            firstNameEditText.setError("Please Enter first name");
+            firstNameEditText.setError("Please enter first name");
             firstNameEditText.requestFocus();
             return false;
         }
 
         if(!AuthUtil.isValidEmail(email)){
-            emailEditText.setError("Please Enter valid email");
+            emailEditText.setError("Please enter valid email");
             emailEditText.requestFocus();
             return false;
         }
 
         if(!AuthUtil.isVailidPhone(number)){
-            numberEditText.setError("Please Enter valid number");
+            numberEditText.setError("Please enter valid number");
             numberEditText.requestFocus();
             return false;
         }
@@ -255,7 +294,7 @@ public class SignUpFragment extends Fragment implements AdapterView.OnItemSelect
         }
 
         if(!confirmPassword.equals(password)){
-            confirmPasswordEditText.setError("Password Mismatched");
+            confirmPasswordEditText.setError("Password mismatched");
             confirmPasswordEditText.requestFocus();
             return false;
         }

@@ -50,7 +50,7 @@ public class WelcomeFragment extends Fragment {
         letsGetStartedButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                loginActivity.addNewFragment(LoginFragment.newInstance());
+                loginActivity.addNewFragment(LoginFragment.newInstance(),getString(R.string.loginFragmentTag));
             }
         });
         return view;

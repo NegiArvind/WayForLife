@@ -65,6 +65,7 @@ public class DetailsWithCommentDialogFragment extends DialogFragment implements 
     private Toolbar toolbar;
     private Boolean isLiked=false;
     private HashMap<String,String> likeHashMap;
+    private User feedUser;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -126,15 +127,18 @@ public class DetailsWithCommentDialogFragment extends DialogFragment implements 
         if(getArguments()!=null){
             //I have passed key of post which user clicks from feed fragment
             postKeyId=getArguments().getString("postKeyId");
-            likeHashMap=GlobalStateApplication.usersHashMap.get(CommonData.firebaseCurrentUserUid).getLikesFeedHashMap();
-            if(likeHashMap!=null){
-                if(likeHashMap.containsKey(postKeyId)) {
-                    isLiked = true;
+//            likeHashMap=GlobalStateApplication.usersHashMap.get(CommonData.firebaseCurrentUserUid).getLikesFeedHashMap();
+            if(User.getCurrentUser()!=null) {
+                likeHashMap = User.getCurrentUser().getLikesFeedHashMap();
+                if (likeHashMap != null) {
+                    if (likeHashMap.containsKey(postKeyId)) {
+                        isLiked = true;
+                    }
+                } else {
+                    likeHashMap = new HashMap<>();
                 }
-            }else{
-                likeHashMap=new HashMap<>();
+                settingTheData();
             }
-            settingTheData();
         }
 
         sendCommentButton.setOnClickListener(this);
@@ -214,7 +218,6 @@ public class DetailsWithCommentDialogFragment extends DialogFragment implements 
                     saveThisLikedPostInUserNode(dataSnapshot.getKey());
                 }
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
@@ -265,11 +268,23 @@ public class DetailsWithCommentDialogFragment extends DialogFragment implements 
         GlobalStateApplication.feedsDatabaseReference.child(postKeyId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                commentProgressBar.setVisibility(View.GONE);
                 post=dataSnapshot.getValue(Post.class);
                 if(post!=null) {
                     Toast.makeText(context, post.getTitle(), Toast.LENGTH_SHORT).show();
-                    setAllTheDataOfThisPost();
+                    GlobalStateApplication.usersDatabaseReference.child(post.getUserId()).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            feedUser=dataSnapshot.getValue(User.class);
+                            if(feedUser!=null){
+                                setAllTheDataOfThisPost();
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
                 }
             }
 
@@ -282,45 +297,43 @@ public class DetailsWithCommentDialogFragment extends DialogFragment implements 
 
     //This below method will set all the data into their appropriate places.
     private void setAllTheDataOfThisPost() {
-        User feedUser=GlobalStateApplication.usersHashMap.get(post.getUserId());
-        if(feedUser!=null) {
-            if (feedUser.getImageUrl() != null) {
-                Picasso.with(context).load(feedUser.getImageUrl()).into(feedUserImageView);
-            } else {
-                feedUserImageView.setImageResource(R.drawable.person_image);
-            }
-
-            if (GlobalStateApplication.usersHashMap.get(CommonData.firebaseCurrentUserUid).getImageUrl() != null) {
-                Picasso.with(context).load(GlobalStateApplication.usersHashMap.get(CommonData.firebaseCurrentUserUid).getImageUrl()).into(currentUserImageView);
-            } else {
-                currentUserImageView.setImageResource(R.drawable.person_image);
-            }
-
-            feedUserNameTextView.setText(feedUser.getFirstName());
-            feedTimeDateTextView.setText(post.getTimeDate());
-            feedTitleTextView.setText(post.getTitle());
-            feedNoOfLikes.setText(String.valueOf(post.getNoOfLikes()));
-
-            if (isLiked) {
-                feedLikeImageView.setImageResource(R.drawable.like_blue_image);
-            }
-            if (post.isPost()) {
-                optionLinearLayout.setVisibility(View.GONE);
-                feedDescriptionReadMoreTextView.setText(post.getContent());
-            } else {
-                String content = post.getContent();
-                int firstIndexOfFirstPattern = content.indexOf(CommonData.firstPatternWord);
-                int firstIndexOfSecondPattern = content.indexOf(CommonData.secondPatternWord);
-                optionOneTextView.setText(content.substring(firstIndexOfFirstPattern + 4, firstIndexOfSecondPattern));
-                optionTwoTextView.setText(content.substring(firstIndexOfSecondPattern + 4));
-                feedDescriptionReadMoreTextView.setText(content.substring(0, firstIndexOfFirstPattern));
-            }
-            commentArrayList = post.getCommentArrayList();
-            if (commentArrayList == null) {
-                commentArrayList = new ArrayList<>();
-            }
-            setCommentAdapter();
+        commentProgressBar.setVisibility(View.GONE);
+        if (feedUser.getImageUrl() != null) {
+            Picasso.with(context).load(feedUser.getImageUrl()).into(feedUserImageView);
+        } else {
+            feedUserImageView.setImageResource(R.drawable.person_image);
         }
+
+        if (User.getCurrentUser().getImageUrl() != null) {
+            Picasso.with(context).load(User.getCurrentUser().getImageUrl()).into(currentUserImageView);
+        } else {
+            currentUserImageView.setImageResource(R.drawable.person_image);
+        }
+
+        feedUserNameTextView.setText(feedUser.getFirstName());
+        feedTimeDateTextView.setText(post.getTimeDate());
+        feedTitleTextView.setText(post.getTitle());
+        feedNoOfLikes.setText(String.valueOf(post.getNoOfLikes()));
+
+        if (isLiked) {
+            feedLikeImageView.setImageResource(R.drawable.like_blue_image);
+        }
+        if (post.isPost()) {
+            optionLinearLayout.setVisibility(View.GONE);
+            feedDescriptionReadMoreTextView.setText(post.getContent());
+        } else {
+            String content = post.getContent();
+            int firstIndexOfFirstPattern = content.indexOf(CommonData.firstPatternWord);
+            int firstIndexOfSecondPattern = content.indexOf(CommonData.secondPatternWord);
+            optionOneTextView.setText(content.substring(firstIndexOfFirstPattern + 4, firstIndexOfSecondPattern));
+            optionTwoTextView.setText(content.substring(firstIndexOfSecondPattern + 4));
+            feedDescriptionReadMoreTextView.setText(content.substring(0, firstIndexOfFirstPattern));
+        }
+        commentArrayList = post.getCommentArrayList();
+        if (commentArrayList == null) {
+            commentArrayList = new ArrayList<>();
+        }
+        setCommentAdapter();
     }
 
     private void setCommentAdapter() {
@@ -347,5 +360,4 @@ public class DetailsWithCommentDialogFragment extends DialogFragment implements 
             Objects.requireNonNull(dialog.getWindow()).setLayout(width, height);
         }
     }
-
 }

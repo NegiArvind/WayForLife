@@ -265,7 +265,7 @@ public class VerificationFragment extends DialogFragment implements View.OnClick
                         homeActivity.addNewFragment(EditProfileFragment.newInstance(),getResources().getString(R.string.editProfileFragmentTag));
                     }else {
                         Toast.makeText(context, "Sign Up successful.", Toast.LENGTH_SHORT).show();
-                        loginActivity.addNewFragment(WelcomeFragment.newInstance());
+                        loginActivity.addNewFragment(WelcomeFragment.newInstance(),getString(R.string.welcomeFragmentTag));
                     }
                 }
             }

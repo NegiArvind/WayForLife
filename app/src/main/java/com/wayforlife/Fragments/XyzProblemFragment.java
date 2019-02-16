@@ -30,6 +30,9 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -41,6 +44,7 @@ import com.wayforlife.GlobalStateApplication;
 import com.wayforlife.Models.LocationAddress;
 import com.wayforlife.Models.Problem;
 import com.wayforlife.Models.SerializeProblem;
+import com.wayforlife.Models.User;
 import com.wayforlife.R;
 import com.wayforlife.Utils.FileUtil;
 import com.wayforlife.Utils.ProgressUtils;
@@ -72,13 +76,14 @@ public class XyzProblemFragment extends Fragment implements View.OnClickListener
     private ProgressBar chooseImageProgressBar;
     private String problemKeyId;
     private Boolean isMarkerClick=false;
-
+    private String problemUserFirstName="";
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view=inflater.inflate(R.layout.xyz_problem_fragment_layout,container,false);
 
         context=getContext();
+
 
         homeActivity= (HomeActivity) getActivity();
         calendar=Calendar.getInstance();
@@ -105,6 +110,7 @@ public class XyzProblemFragment extends Fragment implements View.OnClickListener
                 if (serializeProblem != null) {
                     problem = serializeProblem.getProblem();
 //                    Log.i("user problem name",GlobalStateApplication.usersHashMap.get(problemKeyId).getFirstName());
+                    getProblemUserFirstName();
                     setAllTheProblemDetails();
                     if(CommonData.isAdmin){
                         reportButton.setText("Remove");
@@ -124,6 +130,21 @@ public class XyzProblemFragment extends Fragment implements View.OnClickListener
             }
         }
         return view;
+    }
+
+    private void getProblemUserFirstName() {
+        GlobalStateApplication.usersDatabaseReference.child(problem.getUserId()).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                User user=dataSnapshot.getValue(User.class);
+                problemUserFirstName=user.getFirstName();
+                onResume();
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     /**Below method will set the location , time and date details onto their position.This below method will be called when
@@ -415,7 +436,7 @@ public class XyzProblemFragment extends Fragment implements View.OnClickListener
     public void onResume() {
         super.onResume();
         if(isMarkerClick) {
-            homeActivity.setActionBarTitle(Objects.requireNonNull(GlobalStateApplication.usersHashMap.get(problem.getUserId())).getFirstName() + " Complaint");
+            homeActivity.setActionBarTitle(problemUserFirstName+ " Complaint");
         }else{
             homeActivity.setActionBarTitle("Add your report");
         }

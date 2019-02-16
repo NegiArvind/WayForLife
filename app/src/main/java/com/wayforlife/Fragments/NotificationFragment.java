@@ -21,10 +21,12 @@ import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
+import com.wayforlife.Activities.HomeActivity;
 import com.wayforlife.Adapters.NotificationCustomArrayAdapter;
 import com.wayforlife.Common.CommonData;
 import com.wayforlife.GlobalStateApplication;
 import com.wayforlife.Models.MyNotification;
+import com.wayforlife.Models.User;
 import com.wayforlife.R;
 
 import java.util.ArrayList;
@@ -38,12 +40,14 @@ public class NotificationFragment extends Fragment {
     private NotificationCustomArrayAdapter notificationCustomArrayAdapter;
     private ArrayList<MyNotification> myNotificationArrayList;
     private ProgressBar notificationProgressBar;
+    private HomeActivity homeActivity;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view=inflater.inflate(R.layout.notification_fragment_layout,container,false);
         context=getContext();
+        homeActivity= (HomeActivity) getActivity();
         notificationAddFloatingActionButton=view.findViewById(R.id.notificationAddFloatingActionButton);
 
         if(CommonData.isAdmin) {
@@ -65,10 +69,18 @@ public class NotificationFragment extends Fragment {
         notificationRecyclerView.setLayoutManager(linearLayoutManager);
 
         myNotificationArrayList=new ArrayList<>();
+//
+//        String cityState=GlobalStateApplication.usersHashMap.get(CommonData.firebaseCurrentUserUid).getCityName()+"_"+
+//                GlobalStateApplication.usersHashMap.get(CommonData.firebaseCurrentUserUid).getStateName();
+//        cityState=cityState.replace(' ','_');
+//
+        String cityState= null;
+        if (User.getCurrentUser() != null) {
+            cityState = User.getCurrentUser().getCityName()+"_"+
+                    User.getCurrentUser().getStateName();
+            cityState=cityState.replace(' ','_');
+        }
 
-        String cityState=GlobalStateApplication.usersHashMap.get(CommonData.firebaseCurrentUserUid).getCityName()+"_"+
-                GlobalStateApplication.usersHashMap.get(CommonData.firebaseCurrentUserUid).getStateName();
-        cityState=cityState.replace(' ','_');
 
         notificationCustomArrayAdapter=new NotificationCustomArrayAdapter(context,myNotificationArrayList);
         notificationRecyclerView.setAdapter(notificationCustomArrayAdapter);
@@ -152,5 +164,12 @@ public class NotificationFragment extends Fragment {
         NotificationFragment fragment = new NotificationFragment();
         fragment.setArguments(args);
         return fragment;
+    }
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        homeActivity.setActionBarTitle("Notifications");
     }
 }

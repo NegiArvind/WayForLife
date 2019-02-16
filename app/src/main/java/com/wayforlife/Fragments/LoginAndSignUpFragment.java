@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.wayforlife.Activities.LoginActivity;
 import com.wayforlife.R;
 
 /**This fragment only shows the login and sign up button */
@@ -20,12 +21,14 @@ public class LoginAndSignUpFragment extends Fragment implements View.OnClickList
     private Button loginButton;
     private Button signUpButton;
     private Context context;
+    private LoginActivity loginActivity;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view=inflater.inflate(R.layout.login_and_signup_fragment_layout,container,false);
         context=getContext();
+        loginActivity= (LoginActivity) getActivity();
         loginButton=view.findViewById(R.id.loginButton);
         signUpButton=view.findViewById(R.id.signUpButton);
         loginButton.setOnClickListener(this);
@@ -43,17 +46,10 @@ public class LoginAndSignUpFragment extends Fragment implements View.OnClickList
     @Override
     public void onClick(View v) {
         if(v.getId()==R.id.loginButton){
-            addNewFragment(LoginFragment.newInstance());
+            loginActivity.addNewFragment(LoginFragment.newInstance(),getString(R.string.loginFragmentTag));
         }
         else if(v.getId()==R.id.signUpButton){
-            addNewFragment(SignUpFragment.newInstance());
-        }
-    }
-
-    public void addNewFragment(Fragment fragment){
-        FragmentManager fragmentManager=getFragmentManager();
-        if (fragmentManager != null) {
-            fragmentManager.beginTransaction().replace(R.id.loginFrameLayout,fragment).commit();
+            loginActivity.addNewFragment(SignUpFragment.newInstance(),getString(R.string.signUpFragmentTag));
         }
     }
 }

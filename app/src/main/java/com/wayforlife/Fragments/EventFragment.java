@@ -1,5 +1,6 @@
 package com.wayforlife.Fragments;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -22,6 +23,7 @@ import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
+import com.wayforlife.Activities.HomeActivity;
 import com.wayforlife.Common.CommonData;
 import com.wayforlife.GlobalStateApplication;
 import com.wayforlife.Models.MyEvent;
@@ -41,6 +43,8 @@ public class EventFragment extends Fragment {
     private ArrayList<EventDay> eventDays;
     private FloatingActionButton addNewEventFloatingActionButton;
     private HashMap<String,String> myEventKeyHashMap; //key is date and value is eventKeyId
+    private ChildEventListener eventChildEventListener;
+    private HomeActivity homeActivity;
 
     @Nullable
     @Override
@@ -50,6 +54,7 @@ public class EventFragment extends Fragment {
         calendarView=view.findViewById(R.id.calenderView);
         calendar=Calendar.getInstance();
 
+        homeActivity= (HomeActivity) getActivity();
         addNewEventFloatingActionButton=view.findViewById(R.id.addNewEventFloatingActionButton);
 
         myEventKeyHashMap=new HashMap<>();
@@ -98,7 +103,7 @@ public class EventFragment extends Fragment {
     }
 
     private void getAllTheEventsAndSetIntoCalender() {
-        GlobalStateApplication.eventsDatabaseReference.addChildEventListener(new ChildEventListener() {
+        eventChildEventListener=GlobalStateApplication.eventsDatabaseReference.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 MyEvent myEvent=dataSnapshot.getValue(MyEvent.class);
@@ -175,5 +180,18 @@ public class EventFragment extends Fragment {
         EventFragment fragment = new EventFragment();
         fragment.setArguments(args);
         return fragment;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        GlobalStateApplication.eventsDatabaseReference.removeEventListener(eventChildEventListener);
+//        Toast.makeText(context,"Child event listener removed",Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        homeActivity.setActionBarTitle("Events");
     }
 }
