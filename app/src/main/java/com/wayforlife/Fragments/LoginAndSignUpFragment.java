@@ -4,14 +4,16 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.wayforlife.Activities.LoginActivity;
+import com.wayforlife.Models.User;
 import com.wayforlife.R;
 
 /**This fragment only shows the login and sign up button */
@@ -50,6 +52,7 @@ public class LoginAndSignUpFragment extends Fragment implements View.OnClickList
         }
         else if(v.getId()==R.id.signUpButton){
             loginActivity.addNewFragment(SignUpFragment.newInstance(),getString(R.string.signUpFragmentTag));
+//            loginActivity.addNewFragment(WelcomeFragment.newInstance(),getString(R.string.welcomeFragmentTag));
         }
     }
 }

@@ -29,6 +29,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.wayforlife.Adapters.CommentCustomArrayAdapter;
 import com.wayforlife.Common.CommonData;
@@ -66,6 +67,7 @@ public class DetailsWithCommentDialogFragment extends DialogFragment implements 
     private Boolean isLiked=false;
     private HashMap<String,String> likeHashMap;
     private User feedUser;
+    private ProgressBar feedUserImageViewProgressBar,currentUserImageViewProgressBar;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -117,6 +119,8 @@ public class DetailsWithCommentDialogFragment extends DialogFragment implements 
         commentProgressBar=view.findViewById(R.id.commentProgressBar);
         feedUserNameTextView=view.findViewById(R.id.feedUserNameTextView);
         feedTimeDateTextView=view.findViewById(R.id.feedTimeDateTextView);
+        feedUserImageViewProgressBar=view.findViewById(R.id.feedUserImageViewProgressBar);
+        currentUserImageViewProgressBar=view.findViewById(R.id.currentUserImageViewProgressBar);
 
         linearLayoutManager=new LinearLayoutManager(context);
         commentRecyclerView.setHasFixedSize(false);
@@ -152,6 +156,7 @@ public class DetailsWithCommentDialogFragment extends DialogFragment implements 
     private void showDeleteAlertDialog() {
         new AlertDialog.Builder(context)
                 .setTitle("Delete Post/Poll")
+                .setIcon(R.drawable.way_for_life_logo)
                 .setMessage("Are you sure you want to delete it?")
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
@@ -270,7 +275,7 @@ public class DetailsWithCommentDialogFragment extends DialogFragment implements 
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 post=dataSnapshot.getValue(Post.class);
                 if(post!=null) {
-                    Toast.makeText(context, post.getTitle(), Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(context, post.getTitle(), Toast.LENGTH_SHORT).show();
                     GlobalStateApplication.usersDatabaseReference.child(post.getUserId()).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -299,13 +304,36 @@ public class DetailsWithCommentDialogFragment extends DialogFragment implements 
     private void setAllTheDataOfThisPost() {
         commentProgressBar.setVisibility(View.GONE);
         if (feedUser.getImageUrl() != null) {
-            Picasso.with(context).load(feedUser.getImageUrl()).into(feedUserImageView);
+            Picasso.with(context).load(feedUser.getImageUrl()).into(feedUserImageView, new Callback() {
+                @Override
+                public void onSuccess() {
+                    if(feedUserImageViewProgressBar!=null) {
+                        feedUserImageViewProgressBar.setVisibility(View.GONE);
+                    }
+                }
+                @Override
+                public void onError() {
+
+                }
+            });
         } else {
             feedUserImageView.setImageResource(R.drawable.person_image);
         }
 
         if (User.getCurrentUser().getImageUrl() != null) {
-            Picasso.with(context).load(User.getCurrentUser().getImageUrl()).into(currentUserImageView);
+            Picasso.with(context).load(User.getCurrentUser().getImageUrl()).into(currentUserImageView, new Callback() {
+                @Override
+                public void onSuccess() {
+                    if(currentUserImageViewProgressBar!=null){
+                        currentUserImageViewProgressBar.setVisibility(View.GONE);
+                    }
+                }
+
+                @Override
+                public void onError() {
+
+                }
+            });
         } else {
             currentUserImageView.setImageResource(R.drawable.person_image);
         }
@@ -337,7 +365,7 @@ public class DetailsWithCommentDialogFragment extends DialogFragment implements 
     }
 
     private void setCommentAdapter() {
-        commentCustomArrayAdapter=new CommentCustomArrayAdapter(context,commentArrayList);
+        commentCustomArrayAdapter=new CommentCustomArrayAdapter(context,commentArrayList,postKeyId);
         commentRecyclerView.setAdapter(commentCustomArrayAdapter);
     }
 

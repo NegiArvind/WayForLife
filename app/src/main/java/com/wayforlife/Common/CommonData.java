@@ -15,8 +15,9 @@ public class CommonData {
     public static String secondPatternWord="&$@~";
     public static boolean isAdmin=false;
     public static final String[] months={"Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"};
-    public static String donateUrl="https://milaap.org/fundraisers/wayforlife?utm_source=shorturl";
-    public static String requestBloodUrl="https://google.com";
+    public static String donateUrl="http://m-lp.co/wayoflif/";
+    public static String requestBloodUrl="http://www.friends2support.org/";
+    public static String aboutUsUrl="http://wayforlife.org/about/";
 
     public static String getCurrentTime() {
         Calendar calendar = Calendar.getInstance();

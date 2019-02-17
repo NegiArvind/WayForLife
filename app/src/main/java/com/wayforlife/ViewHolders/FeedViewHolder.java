@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.wayforlife.R;
@@ -16,6 +17,7 @@ public class FeedViewHolder extends RecyclerView.ViewHolder{
     public TextView feedDescriptionReadMoreTextView;
     public LinearLayout optionLinearLayout;
     public TextView optionOneTextView,optionTwoTextView,feedNoOfLikes,feedUserNameTextView,feedTimeDateTextView;
+    public ProgressBar feedUserImageViewProgressBar;
 
     public FeedViewHolder(@NonNull View itemView) {
         super(itemView);
@@ -30,5 +32,6 @@ public class FeedViewHolder extends RecyclerView.ViewHolder{
         feedNoOfLikes=itemView.findViewById(R.id.feedNoOfLikes);
         feedUserNameTextView=itemView.findViewById(R.id.feedUserNameTextView);
         feedTimeDateTextView=itemView.findViewById(R.id.feedTimeDateTextView);
+        feedUserImageViewProgressBar=itemView.findViewById(R.id.feedUserImageViewProgressBar);
     }
 }

@@ -22,6 +22,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.wayforlife.Activities.HomeActivity;
+import com.wayforlife.Activities.LoginActivity;
 import com.wayforlife.Models.MyNotification;
 import com.wayforlife.Models.User;
 import com.wayforlife.R;
@@ -55,7 +56,7 @@ public class NotificationService extends FirebaseMessagingService {
 
 
     private  void createAndSendNotification(String dataTitle,String dataDescription){
-        Intent intent=new Intent(this,HomeActivity.class);
+        Intent intent=new Intent(this,LoginActivity.class);
         intent.putExtra("isNotification",true);
         PendingIntent pendingIntent=PendingIntent.getActivity(this,0,intent,PendingIntent.FLAG_ONE_SHOT);
 
@@ -63,7 +64,7 @@ public class NotificationService extends FirebaseMessagingService {
         Uri  soundUri=RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder=new NotificationCompat.Builder(this);
         notificationBuilder.setContentTitle(dataTitle)
-                .setSmallIcon(R.drawable.ic_launcher_background)
+                .setSmallIcon(R.drawable.way_for_life_logo)
                 .setContentTitle(dataTitle)
                 .setContentIntent(pendingIntent)
                 .setSound(soundUri)

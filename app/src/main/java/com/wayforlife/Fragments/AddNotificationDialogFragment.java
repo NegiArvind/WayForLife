@@ -71,6 +71,7 @@ public class AddNotificationDialogFragment extends DialogFragment implements Ada
         startExecutingAsynckTask();
 
         notificationToolbar=view.findViewById(R.id.notificationToolbar);
+        notificationToolbar.setTitleTextColor(getResources().getColor(R.color.md_white_1000));
         notificationToolbar.setTitle("Create new notification");
         notificationToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override

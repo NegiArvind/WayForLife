@@ -30,7 +30,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.wayforlife.Activities.LoginActivity;
-import com.wayforlife.GlobalStateApplication;
 import com.wayforlife.Models.User;
 import com.wayforlife.R;
 import com.wayforlife.Utils.AuthUtil;
@@ -182,7 +181,7 @@ public class SignUpFragment extends Fragment implements AdapterView.OnItemSelect
                         ArrayList<String> arrayList;
                         arrayList=(ArrayList<String>) Objects.requireNonNull(task.getResult()).getSignInMethods();
                         //if the size is zero it means this email is not authenticated with the firebase
-                        if(arrayList.size()==0){
+                        if(arrayList!=null & arrayList.size()==0){
 
                             User user=new User();
                             user.setFirstName(firstName);
@@ -194,10 +193,9 @@ public class SignUpFragment extends Fragment implements AdapterView.OnItemSelect
                             user.setCityName(city);
                             user.setStateName(state);
 
-//                            if user is new then we will go for verification of number.
-//                            loginActivity.addNewFragment(VerificationFragment.newInstance(user));
+//                          if user is new then we will go for verification of number.
                             ProgressUtils.cancelKprogressDialog();
-                            showDialogFragment(VerificationFragment.newInstance(user,false,null),getString(R.string.verificationDialogFragmentTag));
+                            showDialogFragment(VerificationDialogFragment.newInstance(user,false,null),getString(R.string.verificationDialogFragmentTag));
 
                         }else{
                             ProgressUtils.cancelKprogressDialog();
@@ -207,26 +205,6 @@ public class SignUpFragment extends Fragment implements AdapterView.OnItemSelect
                     }
                 }
             });
-//            if(!isUserAlreadyExist()){
-//
-//                User user=new User();
-//                user.setFirstName(firstName);
-//                if(lastNameEditText.getText().toString().trim().length()!=0)
-//                user.setLastName(lastNameEditText.getText().toString());
-//                user.setPassword(password);
-//                user.setEmail(email);
-//                user.setPhoneNumber(number);
-//                user.setCityName(city);
-//                user.setStateName(state);
-//
-//                //if user is new then we will go for verification of number.
-////                loginActivity.addNewFragment(VerificationFragment.newInstance(user));
-//                showDialogFragment(VerificationFragment.newInstance(user,false,null),getString(R.string.verificationDialogFragmentTag));
-//
-//            }else{
-//                Toast.makeText(loginActivity,"You are already registered. Please login",Toast.LENGTH_LONG).show();
-//                loginActivity.addNewFragment(LoginFragment.newInstance());
-//            }
         }
     }
 
@@ -235,23 +213,8 @@ public class SignUpFragment extends Fragment implements AdapterView.OnItemSelect
         if (getFragmentManager() != null) {
             fragmentTransaction = getFragmentManager().beginTransaction();
             dialogFragment.show(fragmentTransaction,tag);
-//            fragmentTransaction.add(android.R.id.content,dialogFragment,tag).commit();
         }
     }
-
-//    private boolean isUserAlreadyExist() {
-//
-//        for(User user:GlobalStateApplication.usersHashMap.values()){
-//
-//            /** if entered email or mobile number matched with the email or number present in users database
-//            then it means users has already sign up.*/
-//
-//            if(user.getEmail().equals(email)||user.getPhoneNumber().equals(number)){
-//                return true;
-//            }
-//        }
-//        return false;
-//    }
 
     private boolean isAllDetailsCorrect() {
         firstName=firstNameEditText.getText().toString().trim();
@@ -431,60 +394,4 @@ public class SignUpFragment extends Fragment implements AdapterView.OnItemSelect
             }
         }
     }
-
-//    public String getJson()
-//    {
-//        String json=null;
-//        try
-//        {
-//            // Opening cities.json file
-//            InputStream inputStream = getResources().getAssets().open("states_and_districts.json");
-//            // is there any content in the file
-//            int size = inputStream.available();
-//            byte[] buffer = new byte[size];
-//            // read values in the byte array
-//            inputStream.read(buffer);
-//            // close the stream --- very important
-//            inputStream.close();
-//            // convert byte to string
-//            json = new String(buffer, "UTF-8");
-//        }
-//        catch (IOException ex)
-//        {
-//            ex.printStackTrace();
-//            return json;
-//        }
-//        return json;
-//    }
-//
-//
-//    private void getAllDataFromJson(){
-//
-//        String data=getJson();
-//        Log.i("data", data);
-//        // dismiss the progress dialog after receiving data from API
-//
-//        try {
-//            // JSON Parsing of data
-//            JSONObject stateJsonObject=new JSONObject(data);
-//            JSONArray jsonArray = stateJsonObject.getJSONArray("states");
-////            Log.i("json length",String.valueOf(jsonArray.length()));
-//            for(int i=0;i<jsonArray.length();i++){
-//                JSONObject jsonObject=jsonArray.getJSONObject(i);
-//                JSONArray districtJsonArray=jsonObject.getJSONArray("districts");
-//                ArrayList<String> districtArrayList=new ArrayList<>();
-////                Log.i("district length",String.valueOf(districtJsonArray.length()));
-//                for(int j=0;j<districtJsonArray.length();j++){
-//                    districtArrayList.add(districtJsonArray.get(j).toString());
-//                }
-//                Log.i("states ",jsonObject.getString("state"));
-//                stateArrayList.add(jsonObject.getString("state"));
-//                stateAndCityHashMap.put(jsonObject.getString("state"),districtArrayList);
-//            }
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//        }
-//    }
-
-
 }

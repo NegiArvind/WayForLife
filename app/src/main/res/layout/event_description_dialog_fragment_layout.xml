@@ -49,8 +49,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="30sp"
                 android:textSize="18sp"
-                android:text="This is one of the best event you have ever seen.This event will empower you
-to do something for the society."
+                android:text="Event description is loading..."
                 android:layout_below="@id/eventNameTextView"/>
 
             <Button
@@ -60,6 +59,10 @@ to do something for the society."
                 android:layout_marginTop="40sp"
                 android:layout_marginBottom="30sp"
                 android:text="Delete"
+                android:textColor="@color/md_white_1000"
+                android:textStyle="bold"
+                android:padding="4sp"
+                android:background="@drawable/button_gradient_round_shape"
                 android:visibility="invisible"
                 android:layout_below="@id/eventDescriptionTextView"
                 android:layout_centerHorizontal="true"/>

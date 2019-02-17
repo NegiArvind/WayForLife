@@ -54,6 +54,7 @@ public class EventDescriptionDialogFragment extends DialogFragment {
         eventRemoveButton=view.findViewById(R.id.eventRemoveButton);
         eventDescriptionToolbar=view.findViewById(R.id.eventDescriptionToolbar);
 
+        eventDescriptionToolbar.setTitleTextColor(getResources().getColor(R.color.md_white_1000));
         eventDescriptionToolbar.setTitle("About Event");
         eventDescriptionToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -84,6 +85,7 @@ public class EventDescriptionDialogFragment extends DialogFragment {
     private void showDeleteAlertDialog() {
         new AlertDialog.Builder(context)
                 .setTitle("Delete Event")
+                .setIcon(R.drawable.way_for_life_logo)
                 .setMessage("Are you sure you want to delete it?")
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override

@@ -1,6 +1,7 @@
 package com.wayforlife.Activities;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -11,6 +12,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -58,15 +60,6 @@ public class HomeActivity extends AppCompatActivity
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-//        FloatingActionButton fab = findViewById(R.id.fab);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-//            }
-//        });
-
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -75,24 +68,20 @@ public class HomeActivity extends AppCompatActivity
 
         CommonData.firebaseCurrentUserUid=Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
 
-
-//        String cityState=GlobalStateApplication.usersHashMap.get(CommonData.firebaseCurrentUserUid).getCityName()+"_"+
-//                GlobalStateApplication.usersHashMap.get(CommonData.firebaseCurrentUserUid).getStateName();
-//        FirebaseMessaging.getInstance().subscribeToTopic(cityState.replace(' ','_'));
         navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
         bottomNavigationView=findViewById(R.id.bottom_navigation_view);
         bottomNavigationView.setOnNavigationItemSelectedListener(this);
-        initializeAndSetHeaderView();
-
         Toast.makeText(getApplicationContext(),"Inside of home activty",Toast.LENGTH_SHORT).show();
+        Log.i("inside of home ", "activity");
 
 //        for(String string:GlobalStateApplication.usersHashMap.keySet()){
 //            Log.i("user id",string);
 //        }
         bottomNavigationView.setSelectedItemId(R.id.home_bottom_navigation);
         addNewFragment(HomeMapFragment.newInstance(),"homeMapFragment");
+        initializeAndSetHeaderView();
 
     }
 
@@ -135,6 +124,7 @@ public class HomeActivity extends AppCompatActivity
     private void showExitAlertDialog() {
         new AlertDialog.Builder(this)
                 .setTitle("Exit")
+                .setIcon(R.drawable.way_for_life_logo)
                 .setMessage("Are you sure you want to exit?")
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
@@ -178,6 +168,7 @@ public class HomeActivity extends AppCompatActivity
                 moveToWebPage(CommonData.requestBloodUrl);
                 break;
             case R.id.about_us_navigation:
+                moveToWebPage(CommonData.aboutUsUrl);
                 break;
             case R.id.follow_us_navigation:
                 showFollowUsDialog();
@@ -189,11 +180,11 @@ public class HomeActivity extends AppCompatActivity
                 showLogOutAlertDialog();
                 break;
             case R.id.home_bottom_navigation:
-                Toast.makeText(HomeActivity.this,"home button pressed",Toast.LENGTH_SHORT).show();
+//                Toast.makeText(HomeActivity.this,"home button pressed",Toast.LENGTH_SHORT).show();
                 addNewFragment(HomeMapFragment.newInstance(),getString(R.string.homeMapFragmentTag));
                 break;
             case R.id.feed_bottom_navigation:
-                Toast.makeText(HomeActivity.this,"feed button pressed",Toast.LENGTH_SHORT).show();
+//                Toast.makeText(HomeActivity.this,"feed button pressed",Toast.LENGTH_SHORT).show();
                 addNewFragment(FeedFragment.newInstance(),getString(R.string.feedFragmentTag));
                 break;
             case R.id.notification_bottom_navigation:
@@ -226,10 +217,16 @@ public class HomeActivity extends AppCompatActivity
     private void showLogOutAlertDialog() {
         new AlertDialog.Builder(this)
                 .setTitle("Log Out")
+                .setIcon(R.drawable.way_for_life_logo)
                 .setMessage("Are you sure you want to log out?")
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+
+                        //Unsubscribing user from firebase meesssaging so that user will not get any notification if he/she logged out from the app.
+                        String cityState=User.currentUser.getCityName()+"_"+User.currentUser.getStateName();
+                        FirebaseMessaging.getInstance().unsubscribeFromTopic(cityState.replace(' ','_'));
+
                         FirebaseAuth.getInstance().signOut();
                         Intent intent=new Intent(HomeActivity.this,LoginActivity.class);
                         startActivity(new Intent(intent));

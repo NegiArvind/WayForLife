@@ -229,6 +229,7 @@ public class XyzProblemFragment extends Fragment implements View.OnClickListener
     private void showRemoveAlertDialog() {
         new AlertDialog.Builder(context)
                 .setTitle("Remove problem")
+                .setIcon(R.drawable.way_for_life_logo)
                 .setMessage("Are you sure you want to remove this problem?")
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override

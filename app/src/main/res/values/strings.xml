@@ -3,7 +3,7 @@
     <string name="enter_otp_hint">Enter OTP</string>
     <string name="btn_signup">Sign Up</string>
     <string name="detecting_otp_text">Auto Detecting the OTP</string>
-    <string name="autodetecting_message">Autodetecting the OTP</string>
+    <string name="autodetecting_message">(Enter the OTP below in case if we fail to detect SMS automatically)</string>
     <string name="enter_otp_message">Enter OTP</string>
     <string name="resend_otp_message">Resend OTP</string>
     <string name="number_verified_message">Phone Number Verified</string>
@@ -11,8 +11,8 @@
     <string name="password_reset_link">Send password reset link</string>
     <string name="title_activity_home">HomeActivity</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">Android Studio</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_subtitle">android.studio@android.com</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
@@ -52,6 +52,8 @@
     <string name="passwordHint">Password</string>
     <string name="loginButtonText">LOGIN</string>
     <string name="sign_up_button_text">SIGN UP</string>
+    <string name="verifying_message">Sit back &amp; relax! while we verify your mobile number</string>
+    <string name="profilePhotoDialogFragment">profilePhotoDialogFragment</string>
 
 
 </resources>

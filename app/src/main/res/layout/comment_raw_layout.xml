@@ -11,11 +11,26 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/commentUserImageView"
+        <RelativeLayout
+            android:id="@+id/commentUserImageViewRelativeLayout"
+            android:layout_marginStart="3sp"
+            android:layout_marginTop="3sp"
             android:layout_width="40sp"
-            android:layout_height="40sp"
-            android:src="@drawable/person_image"/>
+            android:layout_height="40sp">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/commentUserImageView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/person_image"/>
+
+            <ProgressBar
+                android:padding="5sp"
+                android:id="@+id/commentUserImageViewProgressBar"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
+        </RelativeLayout>
 
         <TextView
             android:textColor="@color/md_blue_900"
@@ -23,8 +38,9 @@
             android:layout_marginStart="10sp"
             android:layout_width="match_parent"
             android:textSize="16sp"
+            android:layout_marginTop="2sp"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@id/commentUserImageView"
+            android:layout_toEndOf="@id/commentUserImageViewRelativeLayout"
             android:textStyle="bold"
             android:text="User Name"/>
 
@@ -35,7 +51,7 @@
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
             android:layout_height="wrap_content"
             android:layout_below="@id/commentorNameTextView"
-            android:layout_toEndOf="@id/commentUserImageView"
+            android:layout_toEndOf="@id/commentUserImageViewRelativeLayout"
             android:text="12:00 AM    5/09/2018 "/>
 
         <TextView
@@ -49,7 +65,20 @@
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
             android:layout_height="wrap_content"
             android:layout_below="@id/timeDateCommentTextView"
-            android:text="This is one of the comment"/>
+            android:text="Comment is loading... "/>
+
+        <ImageButton
+            android:id="@+id/deleteCommentImageButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/delete_image"
+            android:layout_below="@id/commentTextView"
+            android:scaleType="fitXY"
+            android:layout_marginBottom="4sp"
+            android:layout_marginEnd="4sp"
+            android:visibility="gone"
+            android:background="@drawable/background_transparent"
+            android:layout_alignParentEnd="true"/>
 
 
 

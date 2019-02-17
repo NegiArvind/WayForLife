@@ -1,6 +1,7 @@
 package com.wayforlife.Fragments;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -58,12 +59,13 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     private ImageView visibilityPasswordImageView;
     private boolean isPasswordVisible=false;
     private boolean isUserAdmin=false;
-
+    private Context context;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view=inflater.inflate(R.layout.login_fragment_layout,container,false);
 
+        context=getContext();
         loginActivity= (LoginActivity) getActivity();
         firebaseAuth=FirebaseAuth.getInstance();
 
@@ -240,6 +242,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         sendResetPasswordLinkButton.setBackgroundColor(Objects.requireNonNull(getActivity()).getResources().getColor(R.color.colorPrimary));
         final AlertDialog builder=new AlertDialog.Builder(getContext())
                 .setTitle("Reset Password")
+                .setIcon(R.drawable.way_for_life_logo)
                 .setCancelable(false)
                 .setView(view)
                 .setNegativeButton("Go Back",null)
@@ -248,23 +251,25 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         sendResetPasswordLinkButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 if(forgetEmailEditText.getText().toString().trim().equals("")){
                     forgetEmailEditText.setError("Please enter an email first");
                     forgetEmailEditText.requestFocus();
                 }
                 else {
+                    ProgressUtils.showKProgressDialog(context,"Sending...");
+                    builder.dismiss();
                     firebaseAuth.sendPasswordResetEmail(forgetEmailEditText.getText().toString()).
                             addOnCompleteListener(loginActivity, new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if (task.isSuccessful()) {
-                                Toast.makeText(loginActivity, "A Password reset email has been sent to your email " +
+                                Toast.makeText(loginActivity, "A password reset email has been sent to your email " +
                                         forgetEmailEditText.getText().toString(), Toast.LENGTH_SHORT).show();
-                                builder.dismiss();
+                                ProgressUtils.cancelKprogressDialog();
                             } else {
                                 Toast.makeText(loginActivity, "Something went wrong.." + task.getException().getMessage(),
                                         Toast.LENGTH_SHORT).show();
+                                ProgressUtils.cancelKprogressDialog();
                             }
                         }
                     });

@@ -1,6 +1,7 @@
 package com.wayforlife.Fragments;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Address;
@@ -59,7 +60,6 @@ public class HomeMapFragment extends Fragment implements OnMapReadyCallback,Goog
 
     //Whenever Home button will be clicked then this fragment will be displayed
 
-
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,7 +85,7 @@ public class HomeMapFragment extends Fragment implements OnMapReadyCallback,Goog
             e.printStackTrace();
         }
         mapView.getMapAsync(this);
-
+        Log.i("iniside home fragment"," come");
         return view;
 
     }
@@ -149,6 +149,7 @@ public class HomeMapFragment extends Fragment implements OnMapReadyCallback,Goog
 
     @Override
     public void onMapReady(GoogleMap gMap) {
+        Log.i("map is ready now","hh");
         googleMap=gMap;
         googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override

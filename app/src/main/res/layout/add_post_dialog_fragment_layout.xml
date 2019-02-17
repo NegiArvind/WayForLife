@@ -90,15 +90,17 @@
                 android:id="@+id/postButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="10sp"
+                android:padding="14sp"
                 android:layout_marginTop="60sp"
                 android:layout_marginBottom="30sp"
+                android:background="@drawable/button_gradient_round_shape"
                 android:text="Post"
+                android:textColor="@color/md_white_1000"
+                android:textStyle="bold"
                 android:layout_centerHorizontal="true"
                 android:layout_below="@id/postLetterCountingTextView"/>
 
-
         </RelativeLayout>
-
     </ScrollView>
+
 </RelativeLayout>
