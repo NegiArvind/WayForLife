@@ -59,6 +59,7 @@ public class AddPostDialogFragment extends DialogFragment {
         View view=inflater.inflate(R.layout.add_post_dialog_fragment_layout,container,false);
         context=getContext();
         addPostToolbar=view.findViewById(R.id.addPostToolbar);
+        addPostToolbar.setTitleTextColor(getResources().getColor(R.color.md_white_1000));
         addPostToolbar.setTitle("Add your post"); //Setting the title
         addPostToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override

@@ -2,8 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
         <item
-            android:title="Filter">
-
+            android:title="Filter By">
             <menu>
                 <group
                     android:checkableBehavior="single">

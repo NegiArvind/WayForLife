@@ -59,7 +59,7 @@ public class FeedCustomRecyclerViewArrayAdapter extends RecyclerView.Adapter<Fee
         LayoutInflater layoutInflater=LayoutInflater.from(context);
         View view=layoutInflater.inflate(R.layout.feed_row_layout,viewGroup,false);
         FeedViewHolder feedViewHolder=new FeedViewHolder(view);
-        feedViewHolder.setIsRecyclable(false);
+//        feedViewHolder.setIsRecyclable(false);
         return feedViewHolder;
     }
 
@@ -67,24 +67,39 @@ public class FeedCustomRecyclerViewArrayAdapter extends RecyclerView.Adapter<Fee
     public void onBindViewHolder(@NonNull final FeedViewHolder feedViewHolder, final int i) {
 
         //Binding all the data of post on view holder
-        Post post=postPollArrayList.get(i);
+        final Post post=postPollArrayList.get(feedViewHolder.getAdapterPosition());
         //if post.getPost() is true, it means it is a post then show post raw layout otherwise show poll raw layout
-        setAllDataOnViewHolder(feedViewHolder,post,i);
+        GlobalStateApplication.usersDatabaseReference.child(post.getUserId()).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                User feedUser=dataSnapshot.getValue(User.class);
+                if(feedUser!=null){
+                    setAllDataOnViewHolder(feedViewHolder,post,feedViewHolder.getAdapterPosition(),feedUser);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
         feedViewHolder.feedLikeImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                likesFeedHashMap=GlobalStateApplication.usersHashMap.get(CommonData.firebaseCurrentUserUid).getLikesFeedHashMap();
-                /**likesFeedHashMap contains all the keys of post which users had liked. if user has already liked the post and he again
-                presses like button then i will not do anything. But if he has not liked then this blue like image will be set
-                and will update the post.
-                Initially there will no liked post by user.So at that time likesFeedHashMap will be null.It is the first time so i am directly
-                setting the blue like image without checking(that this post key is present in users likesFeedHashMap.*/
-                if(likesFeedHashMap!=null) {
-                    if (!likesFeedHashMap.containsKey(postPollKeyArrayList.get(feedViewHolder.getAdapterPosition()))) {
+                if(User.getCurrentUser()!=null) {
+                    likesFeedHashMap = User.getCurrentUser().getLikesFeedHashMap();
+                    /**likesFeedHashMap contains all the keys of post which users had liked. if user has already liked the post and he again
+                     presses like button then i will not do anything. But if he has not liked then this blue like image will be set
+                     and will update the post.
+                     Initially there will no liked post by user.So at that time likesFeedHashMap will be null.It is the first time so i am directly
+                     setting the blue like image without checking(that this post key is present in users likesFeedHashMap.*/
+                    if (likesFeedHashMap != null) {
+                        if (!likesFeedHashMap.containsKey(postPollKeyArrayList.get(feedViewHolder.getAdapterPosition()))) {
+                            setNewData(feedViewHolder);
+                        }
+                    } else {
                         setNewData(feedViewHolder);
                     }
-                }else{
-                    setNewData(feedViewHolder);
                 }
             }
         });
@@ -149,23 +164,24 @@ public class FeedCustomRecyclerViewArrayAdapter extends RecyclerView.Adapter<Fee
         });
     }
 
-    private void setAllDataOnViewHolder(final FeedViewHolder feedViewHolder, Post post,int position) {
+    private void setAllDataOnViewHolder(final FeedViewHolder feedViewHolder, Post post,int position,User feedUser) {
 
         /**Initially when data will be shown to user, at that time i have to set the like_image to blue_like_image which he has liked
          * already. For that i am checking if the post key is present in usersLikedPostHashMap or not. if it is not present there it means
          * user haven't liked it yet now. */
-        User feedUser=GlobalStateApplication.usersHashMap.get(post.getUserId());
-        if(feedUser!=null) {
-            if (feedUser.getImageUrl() != null) {
-                Picasso.with(context).load(Objects.requireNonNull(feedUser.getImageUrl())).into(feedViewHolder.feedUserImageView);
-            } else {
-                feedViewHolder.feedUserImageView.setImageResource(R.drawable.person_image);
-            }
-            feedViewHolder.feedUserNameTextView.setText(feedUser.getFirstName());
-            feedViewHolder.feedTimeDateTextView.setText(post.getTimeDate());
-            feedViewHolder.feedTitleTextView.setText(post.getTitle());
-            likesFeedHashMap = GlobalStateApplication.usersHashMap.get(CommonData.firebaseCurrentUserUid).getLikesFeedHashMap();
-            if (likesFeedHashMap != null) {
+        if (feedUser.getImageUrl() != null) {
+            Picasso.with(context).load(Objects.requireNonNull(feedUser.getImageUrl())).into(feedViewHolder.feedUserImageView);
+        } else {
+            feedViewHolder.feedUserImageView.setImageResource(R.drawable.person_image);
+        }
+        feedViewHolder.feedUserNameTextView.setText(feedUser.getFirstName());
+        feedViewHolder.feedTimeDateTextView.setText(post.getTimeDate());
+        feedViewHolder.feedTitleTextView.setText(post.getTitle());
+
+        if (User.getCurrentUser() != null) {
+            likesFeedHashMap = User.getCurrentUser().getLikesFeedHashMap();
+        }
+        if (likesFeedHashMap != null) {
                 String tempKey = likesFeedHashMap.get(postPollKeyArrayList.get(position));
                 if (tempKey != null) {
                     feedViewHolder.feedLikeImageView.setImageResource(R.drawable.like_blue_image);
@@ -187,7 +203,6 @@ public class FeedCustomRecyclerViewArrayAdapter extends RecyclerView.Adapter<Fee
                 feedViewHolder.optionTwoTextView.setText(content.substring(firstIndexOfSecondPattern + 4));
                 feedViewHolder.feedDescriptionReadMoreTextView.setText(content.substring(0, firstIndexOfFirstPattern));
             }
-        }
     }
 
     @Override

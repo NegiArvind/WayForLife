@@ -10,6 +10,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.text.InputType;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,15 +22,20 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.SignInMethodQueryResult;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.wayforlife.Activities.LoginActivity;
-import com.wayforlife.GlobalStateApplication;
+import com.wayforlife.Common.NetworkCheck;
 import com.wayforlife.Models.User;
 import com.wayforlife.R;
 import com.wayforlife.Utils.AuthUtil;
+import com.wayforlife.Utils.ProgressUtils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -41,6 +47,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Objects;
 
 /** This fragment is used for signUp the user */
 public class SignUpFragment extends Fragment implements AdapterView.OnItemSelectedListener,View.OnClickListener {
@@ -114,7 +121,13 @@ public class SignUpFragment extends Fragment implements AdapterView.OnItemSelect
     public void onClick(View v) {
         switch(v.getId()){
             case R.id.sendOtpButton:
-                verifyAndSendOtp();
+                if(NetworkCheck.isNetworkAvailable(context)) {
+                    verifyAndSendOtp();
+                }else{
+                    Toast toast=Toast.makeText(context,getString(R.string.no_internet_connection),Toast.LENGTH_SHORT);
+                    toast.setGravity(Gravity.CENTER,0,0);
+                    toast.show();
+                }
                 break;
 
             case R.id.visibilityPasswordImageView:
@@ -168,26 +181,38 @@ public class SignUpFragment extends Fragment implements AdapterView.OnItemSelect
 
     private void verifyAndSendOtp() {
         if(isAllDetailsCorrect()){
-            if(!isUserAlreadyExist()){
+            ProgressUtils.showKProgressDialog(context,"Getting you in..");
+            FirebaseAuth.getInstance().fetchSignInMethodsForEmail(email).addOnCompleteListener(new OnCompleteListener<SignInMethodQueryResult>() {
+                @Override
+                public void onComplete(@NonNull Task<SignInMethodQueryResult> task) {
+                    if(task.isSuccessful()){
+                        ArrayList<String> arrayList;
+                        arrayList=(ArrayList<String>) Objects.requireNonNull(task.getResult()).getSignInMethods();
+                        //if the size is zero it means this email is not authenticated with the firebase
+                        if(arrayList!=null & arrayList.size()==0){
 
-                User user=new User();
-                user.setFirstName(firstName);
-                if(lastNameEditText.getText().toString().trim().length()!=0)
-                user.setLastName(lastNameEditText.getText().toString());
-                user.setPassword(password);
-                user.setEmail(email);
-                user.setPhoneNumber(number);
-                user.setCityName(city);
-                user.setStateName(state);
+                            User user=new User();
+                            user.setFirstName(firstName);
+                            if(lastNameEditText.getText().toString().trim().length()!=0)
+                                user.setLastName(lastNameEditText.getText().toString());
+                            user.setPassword(password);
+                            user.setEmail(email);
+                            user.setPhoneNumber(number);
+                            user.setCityName(city);
+                            user.setStateName(state);
 
-                //if user is new then we will go for verification of number.
-//                loginActivity.addNewFragment(VerificationFragment.newInstance(user));
-                showDialogFragment(VerificationFragment.newInstance(user,false,null),getString(R.string.verificationDialogFragmentTag));
+//                          if user is new then we will go for verification of number.
+                            ProgressUtils.cancelKprogressDialog();
+                            showDialogFragment(VerificationDialogFragment.newInstance(user,false,null),getString(R.string.verificationDialogFragmentTag));
 
-            }else{
-                Toast.makeText(loginActivity,"You are already registered. Please login",Toast.LENGTH_LONG).show();
-                loginActivity.addNewFragment(LoginFragment.newInstance());
-            }
+                        }else{
+                            ProgressUtils.cancelKprogressDialog();
+                            Toast.makeText(loginActivity,"You are already registered. Please login",Toast.LENGTH_LONG).show();
+                            loginActivity.addNewFragment(LoginFragment.newInstance(),getString(R.string.loginFragmentTag));
+                        }
+                    }
+                }
+            });
         }
     }
 
@@ -196,22 +221,7 @@ public class SignUpFragment extends Fragment implements AdapterView.OnItemSelect
         if (getFragmentManager() != null) {
             fragmentTransaction = getFragmentManager().beginTransaction();
             dialogFragment.show(fragmentTransaction,tag);
-//            fragmentTransaction.add(android.R.id.content,dialogFragment,tag).commit();
         }
-    }
-
-    private boolean isUserAlreadyExist() {
-
-        for(User user:GlobalStateApplication.usersHashMap.values()){
-
-            /** if entered email or mobile number matched with the email or number present in users database
-            then it means users has already sign up.*/
-
-            if(user.getEmail().equals(email)||user.getPhoneNumber().equals(number)){
-                return true;
-            }
-        }
-        return false;
     }
 
     private boolean isAllDetailsCorrect() {
@@ -221,19 +231,19 @@ public class SignUpFragment extends Fragment implements AdapterView.OnItemSelect
         password=passwordEditText.getText().toString();
         confirmPassword=confirmPasswordEditText.getText().toString();
         if(firstName.equals("")){
-            firstNameEditText.setError("Please Enter first name");
+            firstNameEditText.setError("Please enter first name");
             firstNameEditText.requestFocus();
             return false;
         }
 
         if(!AuthUtil.isValidEmail(email)){
-            emailEditText.setError("Please Enter valid email");
+            emailEditText.setError("Please enter valid email");
             emailEditText.requestFocus();
             return false;
         }
 
         if(!AuthUtil.isVailidPhone(number)){
-            numberEditText.setError("Please Enter valid number");
+            numberEditText.setError("Please enter valid number");
             numberEditText.requestFocus();
             return false;
         }
@@ -255,7 +265,7 @@ public class SignUpFragment extends Fragment implements AdapterView.OnItemSelect
         }
 
         if(!confirmPassword.equals(password)){
-            confirmPasswordEditText.setError("Password Mismatched");
+            confirmPasswordEditText.setError("Password mismatched");
             confirmPasswordEditText.requestFocus();
             return false;
         }
@@ -392,60 +402,4 @@ public class SignUpFragment extends Fragment implements AdapterView.OnItemSelect
             }
         }
     }
-
-//    public String getJson()
-//    {
-//        String json=null;
-//        try
-//        {
-//            // Opening cities.json file
-//            InputStream inputStream = getResources().getAssets().open("states_and_districts.json");
-//            // is there any content in the file
-//            int size = inputStream.available();
-//            byte[] buffer = new byte[size];
-//            // read values in the byte array
-//            inputStream.read(buffer);
-//            // close the stream --- very important
-//            inputStream.close();
-//            // convert byte to string
-//            json = new String(buffer, "UTF-8");
-//        }
-//        catch (IOException ex)
-//        {
-//            ex.printStackTrace();
-//            return json;
-//        }
-//        return json;
-//    }
-//
-//
-//    private void getAllDataFromJson(){
-//
-//        String data=getJson();
-//        Log.i("data", data);
-//        // dismiss the progress dialog after receiving data from API
-//
-//        try {
-//            // JSON Parsing of data
-//            JSONObject stateJsonObject=new JSONObject(data);
-//            JSONArray jsonArray = stateJsonObject.getJSONArray("states");
-////            Log.i("json length",String.valueOf(jsonArray.length()));
-//            for(int i=0;i<jsonArray.length();i++){
-//                JSONObject jsonObject=jsonArray.getJSONObject(i);
-//                JSONArray districtJsonArray=jsonObject.getJSONArray("districts");
-//                ArrayList<String> districtArrayList=new ArrayList<>();
-////                Log.i("district length",String.valueOf(districtJsonArray.length()));
-//                for(int j=0;j<districtJsonArray.length();j++){
-//                    districtArrayList.add(districtJsonArray.get(j).toString());
-//                }
-//                Log.i("states ",jsonObject.getString("state"));
-//                stateArrayList.add(jsonObject.getString("state"));
-//                stateAndCityHashMap.put(jsonObject.getString("state"),districtArrayList);
-//            }
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//        }
-//    }
-
-
 }

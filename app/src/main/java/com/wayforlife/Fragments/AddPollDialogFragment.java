@@ -58,6 +58,7 @@ public class AddPollDialogFragment extends DialogFragment {
         View view=inflater.inflate(R.layout.add_poll_dialog_fragment_layout,container,false);
         context=getContext();
         addPollToolbar=view.findViewById(R.id.addPollToolbar);
+        addPollToolbar.setTitleTextColor(getResources().getColor(R.color.md_white_1000));
         addPollToolbar.setTitle("Add your poll");
         addPollToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override

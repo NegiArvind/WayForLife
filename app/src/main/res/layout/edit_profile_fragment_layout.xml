@@ -10,13 +10,45 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/editProfileUserImageView"
-            android:layout_marginTop="40sp"
-            android:layout_width="100sp"
-            android:layout_height="100sp"
-            android:src="@drawable/ic_launcher_background"
-            android:layout_centerHorizontal="true"/>
+        <RelativeLayout
+            android:id="@+id/editProfileUserImageViewRelativeLayout"
+            android:layout_width="150sp"
+            android:layout_height="150sp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="40sp">
+
+            <ProgressBar
+                android:id="@+id/editProfileImageViewProgressBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"/>
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/editProfileUserImageView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_launcher_background"/>
+
+            <RelativeLayout
+                android:layout_alignEnd="@id/editProfileUserImageView"
+                android:layout_alignBottom="@id/editProfileUserImageView"
+                android:layout_width="50sp"
+                android:layout_height="50sp"
+                android:background="@drawable/circular_shape">
+
+                <ImageButton
+                    android:id="@+id/cameraImageButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:src="@drawable/camera_image"
+                    android:background="@drawable/background_transparent"
+                    />
+
+            </RelativeLayout>
+
+        </RelativeLayout>
+
 
         <TextView
             android:id="@+id/nameTextView"
@@ -25,7 +57,7 @@
             android:layout_marginTop="28sp"
             android:layout_marginStart="24sp"
             android:layout_marginEnd="24sp"
-            android:layout_below="@id/editProfileUserImageView"
+            android:layout_below="@id/editProfileUserImageViewRelativeLayout"
             android:text="First Name"/>
 
         <EditText
@@ -134,6 +166,9 @@
             android:text="Submit"
             android:padding="4sp"
             android:layout_centerHorizontal="true"
+            android:background="@drawable/button_gradient_round_shape"
+            android:textColor="@color/md_white_1000"
+            android:textStyle="bold"
             android:layout_marginTop="30sp"
             android:layout_marginBottom="30sp"
             android:layout_below="@id/editProfileCitySpinner"/>

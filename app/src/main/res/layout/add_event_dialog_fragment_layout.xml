@@ -101,6 +101,10 @@
                 android:layout_marginTop="30sp"
                 android:layout_marginBottom="30sp"
                 android:text="ADD"
+                android:padding="15sp"
+                android:background="@drawable/button_gradient_round_shape"
+                android:textColor="@color/md_white_1000"
+                android:textStyle="bold"
                 android:layout_below="@id/eventDescriptionEditText"/>
 
         </RelativeLayout>

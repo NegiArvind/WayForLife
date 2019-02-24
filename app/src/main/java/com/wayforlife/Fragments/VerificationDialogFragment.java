@@ -8,8 +8,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,7 +29,10 @@ import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.wayforlife.Activities.HomeActivity;
 import com.wayforlife.Activities.LoginActivity;
+import com.wayforlife.Common.NetworkCheck;
 import com.wayforlife.Models.SerializeUser;
 import com.wayforlife.Models.User;
 import com.wayforlife.R;
@@ -38,7 +41,7 @@ import com.wayforlife.Utils.ProgressUtils;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
-public class VerificationFragment1 extends DialogFragment implements View.OnClickListener {
+public class VerificationDialogFragment extends DialogFragment implements View.OnClickListener {
 
     private EditText otpEditText;
     private TextView verificationTextView;
@@ -54,8 +57,11 @@ public class VerificationFragment1 extends DialogFragment implements View.OnClic
     private Context context;
     private FirebaseAuth firebaseAuth;
     private DatabaseReference userDatabaseReference;
-//    private LoginActivity loginActivity;
+    private LoginActivity loginActivity;
+    private HomeActivity homeActivity;
     private SerializeUser serializeUser;
+    private boolean isEditProfile=false;
+    private String oldSubscribeTopic;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -66,12 +72,11 @@ public class VerificationFragment1 extends DialogFragment implements View.OnClic
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view=inflater.inflate(R.layout.verification_fragment_layout,container,false);
+        View view=inflater.inflate(R.layout.verification_dialog_fragment_layout,container,false);
 
         context=getContext();
         firebaseAuth=FirebaseAuth.getInstance();
         userDatabaseReference=FirebaseDatabase.getInstance().getReference("Users");
-//        loginActivity= (LoginActivity) getActivity();
         otpEditText=view.findViewById(R.id.enterOtpEditText);
         verificationTextView=view.findViewById(R.id.textView);
         progressBar=view.findViewById(R.id.progressBar);
@@ -80,7 +85,18 @@ public class VerificationFragment1 extends DialogFragment implements View.OnClic
 
         if (getArguments() != null) {
             serializeUser = (SerializeUser) getArguments().getSerializable("user");
+            isEditProfile=getArguments().getBoolean("isEditProfile");
+            if(isEditProfile){
+                oldSubscribeTopic=getArguments().getString("oldSubscribeTopic");
+                homeActivity=(HomeActivity)getActivity();
+                signUpButton.setText("Update");
+            }else{
+                loginActivity= (LoginActivity) getActivity();
+                signUpButton.setText("Sign Up");
+            }
+
         }
+
 
         signUpButton.setOnClickListener(this);
         resendOtpButton.setOnClickListener(this);
@@ -133,7 +149,7 @@ public class VerificationFragment1 extends DialogFragment implements View.OnClic
     }
 
     private void startPhoneNumberVerification(String phoneNumber) {
-        Log.i("user phone number",phoneNumber);
+        Log.i("user phonenumber",phoneNumber);
         PhoneAuthProvider.getInstance().verifyPhoneNumber("+91"+phoneNumber
             ,60
             ,TimeUnit.SECONDS
@@ -141,11 +157,13 @@ public class VerificationFragment1 extends DialogFragment implements View.OnClic
             ,mCallBacks);
     }
 
-    public static VerificationFragment1 newInstance(User user) {
+    public static VerificationDialogFragment newInstance(User user, boolean isEditProfile, String oldSubscribeTopic) {
         Bundle args = new Bundle();
         SerializeUser serializeUser=new SerializeUser(user);
         args.putSerializable("user",serializeUser);
-        VerificationFragment1 fragment = new VerificationFragment1();
+        args.putBoolean("isEditProfile",isEditProfile);
+        args.putString("oldSubscribeTopic",oldSubscribeTopic);
+        VerificationDialogFragment fragment = new VerificationDialogFragment();
         fragment.setArguments(args);
         return fragment;
     }
@@ -155,14 +173,26 @@ public class VerificationFragment1 extends DialogFragment implements View.OnClic
         if(v.getId()==R.id.signUpButton){
             if(!isPhoneNumberVerified){
                 if(otpEditText.getText().toString().trim().length()!=0) {
-                    verifyPhoneNumberWithCode(otpEditText.getText().toString().trim());
+                    if(NetworkCheck.isNetworkAvailable(context)) {
+                        verifyPhoneNumberWithCode(otpEditText.getText().toString().trim());
+                    }else{
+                        Toast toast=Toast.makeText(context,getString(R.string.no_internet_connection),Toast.LENGTH_SHORT);
+                        toast.setGravity(Gravity.CENTER,0,0);
+                        toast.show();
+                    }
                 }
                 else{
                     Toast.makeText(context,"Please enter otp first",Toast.LENGTH_SHORT).show();
                 }
             }
         }else if(v.getId()==R.id.resendOtpButton){
-            resendAlertDialog();
+            if(NetworkCheck.isNetworkAvailable(context)) {
+                resendAlertDialog();
+            }else{
+                Toast toast=Toast.makeText(context,getString(R.string.no_internet_connection),Toast.LENGTH_SHORT);
+                toast.setGravity(Gravity.CENTER,0,0);
+                toast.show();
+            }
         }
     }
 
@@ -188,55 +218,38 @@ public class VerificationFragment1 extends DialogFragment implements View.OnClic
 
 
     private void registerUserWithCredential() {
-        Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).updatePhoneNumber(phoneAuthCredential).addOnCompleteListener(new OnCompleteListener<Void>() {
+        firebaseAuth.createUserWithEmailAndPassword(user.getEmail(),user.getPassword()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
-            public void onComplete(@NonNull Task<Void> task) {
+            public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful()){
-                    Log.i("Phone number ","linked");
-                    User.setCurrentUser(user);
-                    makeUserEntryIntoFirebaseDatabase();
-//                                loginActivity.addNewFragment(WelcomeFragment.newInstance());
+                    Objects.requireNonNull(firebaseAuth.getCurrentUser()).linkWithCredential(phoneAuthCredential).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if(task.isSuccessful()){
+                                Log.i("Phone number ","linked");
+                                User.setCurrentUser(user);
+                                makeUserEntryIntoFirebaseDatabase();
 
+                            }else{
+                                firebaseAuth.getCurrentUser().delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        if(task.isSuccessful()){
+                                            ProgressUtils.cancelKprogressDialog();
+                                            Toast.makeText(context,"Please Enter a valid OTP",Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+                                });
+                                Toast.makeText(context, "Sign Up Failed", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
                 }else{
                     ProgressUtils.cancelKprogressDialog();
-                    Toast.makeText(context,"Please Enter a valid OTP",Toast.LENGTH_SHORT).show();
-                    Toast.makeText(context, "Update Failed", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context,Objects.requireNonNull(task.getException()).toString(),Toast.LENGTH_SHORT).show();
                 }
             }
         });
-//        firebaseAuth.createUserWithEmailAndPassword(user.getEmail(),user.getPassword()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-//            @Override
-//            public void onComplete(@NonNull Task<AuthResult> task) {
-//                if(task.isSuccessful()){
-//                    Objects.requireNonNull(firebaseAuth.getCurrentUser()).linkWithCredential(phoneAuthCredential).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-//                        @Override
-//                        public void onComplete(@NonNull Task<AuthResult> task) {
-//                            if(task.isSuccessful()){
-//                                Log.i("Phone number ","linked");
-//                                User.setCurrentUser(user);
-//                                makeUserEntryIntoFirebaseDatabase();
-////                                loginActivity.addNewFragment(WelcomeFragment.newInstance());
-//
-//                            }else{
-//                                firebaseAuth.getCurrentUser().delete().addOnCompleteListener(new OnCompleteListener<Void>() {
-//                                    @Override
-//                                    public void onComplete(@NonNull Task<Void> task) {
-//                                        if(task.isSuccessful()){
-//                                            ProgressUtils.cancelKprogressDialog();
-//                                            Toast.makeText(context,"Please Enter a valid OTP",Toast.LENGTH_SHORT).show();
-//                                        }
-//                                    }
-//                                });
-//                                Toast.makeText(context, "Sign Up Failed", Toast.LENGTH_SHORT).show();
-//                            }
-//                        }
-//                    });
-//                }else{
-//                    ProgressUtils.cancelKprogressDialog();
-//                    Toast.makeText(context,Objects.requireNonNull(task.getException()).toString(),Toast.LENGTH_SHORT).show();
-//                }
-//            }
-//        });
     }
 
     private void makeUserEntryIntoFirebaseDatabase() {
@@ -245,9 +258,29 @@ public class VerificationFragment1 extends DialogFragment implements View.OnClic
             public void onComplete(@NonNull Task<Void> task) {
                 if(task.isSuccessful()){
                     ProgressUtils.cancelKprogressDialog();
-//                    Toast.makeText(context,"Signed Up successfully. Please Login",Toast.LENGTH_SHORT).show();
-                    Toast.makeText(context, "Profile successfully edited", Toast.LENGTH_SHORT).show();
                     dismiss();
+                    if(isEditProfile){
+                        if(oldSubscribeTopic!=null) {
+                            final String newTopic = user.getCityName() + '_' + user.getStateName();
+                            Log.i("newTopic",newTopic);
+                            Log.i("oldSubscribeTopic",oldSubscribeTopic);
+                            FirebaseMessaging.getInstance().unsubscribeFromTopic(oldSubscribeTopic.replace(' ', '_')).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if(task.isSuccessful()){
+                                        FirebaseMessaging.getInstance().subscribeToTopic(newTopic.replace(' ', '_'));
+                                        Log.i("new Topic update","in verification fragment");
+                                    }
+                                }
+                            });
+                        }
+                        Toast.makeText(context, "Profile successfully edited", Toast.LENGTH_SHORT).show();
+                        homeActivity.initializeAndSetHeaderView();
+                        homeActivity.addNewFragment(EditProfileFragment.newInstance(),getResources().getString(R.string.editProfileFragmentTag));
+                    }else {
+                        Toast.makeText(context, "Sign Up successful.", Toast.LENGTH_SHORT).show();
+                        loginActivity.addNewFragment(WelcomeFragment.newInstance(),getString(R.string.welcomeFragmentTag));
+                    }
                 }
             }
         });
@@ -259,10 +292,31 @@ public class VerificationFragment1 extends DialogFragment implements View.OnClic
             phoneAuthCredential = PhoneAuthProvider.getCredential(verificationId, otp);
 //          verificationTextView.setText(getString(R.string.number_verified_message));
             ProgressUtils.showKProgressDialog(context,"Getting you in");
-            registerUserWithCredential();
+            if(isEditProfile){
+                updateUserWithNewCredential();
+            }else {
+                registerUserWithCredential();
+            }
         }else{
             Toast.makeText(context,"Please enter valid OTP",Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void updateUserWithNewCredential() {
+        Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).updatePhoneNumber(phoneAuthCredential).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if(task.isSuccessful()){
+                    Log.i("Phone number ","linked");
+                    User.setCurrentUser(user);
+                    makeUserEntryIntoFirebaseDatabase();
+                }else{
+                    ProgressUtils.cancelKprogressDialog();
+                    Toast.makeText(context,"Please Enter a valid OTP",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "Update Failed", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
     private void resendVerificationCode(String phoneNumber,

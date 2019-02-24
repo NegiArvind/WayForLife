@@ -19,20 +19,35 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/feedUserImageView"
+            <RelativeLayout
+                android:id="@+id/feedUserImageViewRelativeLayout"
                 android:layout_width="40sp"
-                android:layout_height="40sp"
-                android:src="@drawable/person_image"/>
+                android:layout_marginTop="6sp"
+                android:layout_marginStart="5sp"
+                android:layout_height="40sp">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/feedUserImageView"
+                    android:src="@drawable/circular_person_image_background"/>
+
+                <ProgressBar
+                    android:padding="5sp"
+                    android:id="@+id/feedUserImageViewProgressBar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+            </RelativeLayout>
 
             <TextView
                 android:id="@+id/feedUserNameTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_toEndOf="@id/feedUserImageView"
+                android:layout_toEndOf="@id/feedUserImageViewRelativeLayout"
                 android:layout_marginStart="10sp"
-                android:layout_marginTop="2sp"
-                android:text="Arvind Negi"
+                android:layout_marginTop="6sp"
+                android:text="User Name"
                 android:textColor="@color/md_black_1000"
                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
                 />
@@ -41,7 +56,7 @@
                 android:id="@+id/feedTimeDateTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_toEndOf="@id/feedUserImageView"
+                android:layout_toEndOf="@id/feedUserImageViewRelativeLayout"
                 android:layout_below="@id/feedUserNameTextView"
                 android:layout_marginStart="10sp"
                 android:text="10:00 AM  12/09/2019"
@@ -59,9 +74,9 @@
             android:layout_marginStart="10sp"
             android:layout_marginTop="5sp"
             android:layout_centerVertical="true"
-            android:text="Title is looking to much big."
+            android:text="Title is loading..."
             android:textStyle="bold"
-            android:textSize="20sp"
+            android:textSize="18sp"
             android:textColor="@color/md_black_1000"
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
             />
@@ -73,9 +88,9 @@
             android:id="@+id/feedDescriptionReadMoreTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="17sp"
+            android:textSize="16sp"
             android:layout_below="@id/feedTitleTextView"
-            android:text="Your are looking great bro but it is not good for me."
+            android:text="Post description is loading...."
             />
 
         <LinearLayout
@@ -94,7 +109,7 @@
                 android:gravity="center"
                 android:layout_gravity="center_vertical"
                 android:textColor="@color/md_black_1000"
-                android:textSize="19sp"
+                android:textSize="17sp"
                 android:text="Option 1"/>
 
             <View
@@ -109,7 +124,7 @@
                 android:gravity="center"
                 android:layout_weight="1"
                 android:id="@+id/optionTwoTextView"
-                android:textSize="19sp"
+                android:textSize="17sp"
                 android:textColor="@color/md_black_1000"
                 android:layout_width="0dp"
                 android:layout_gravity="center_vertical"
@@ -155,7 +170,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
-                    android:text="123"
+                    android:text="+"
                     android:layout_marginBottom="2sp"
                     />
 

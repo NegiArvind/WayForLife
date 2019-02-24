@@ -1,6 +1,7 @@
 package com.wayforlife.Fragments;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -21,15 +22,22 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.wayforlife.Activities.HomeActivity;
 import com.wayforlife.Activities.LoginActivity;
+import com.wayforlife.Common.CommonData;
+import com.wayforlife.Common.NetworkCheck;
 import com.wayforlife.GlobalStateApplication;
 import com.wayforlife.Models.User;
 import com.wayforlife.R;
 import com.wayforlife.Utils.AuthUtil;
 import com.wayforlife.Utils.ProgressUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -40,9 +48,9 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     private EditText emailLoginEditText;
     private EditText passwordLoginEditText;
     private List<User> users;
-    private boolean isPhoneNumber;
+//    private boolean isPhoneNumber;
     private boolean isEmail;
-    private String username="Sample@test.com";
+    private String loginEmail ="Sample@test.com";
     private FirebaseAuth firebaseAuth;
     private LoginActivity loginActivity;
     private Button loginButton;
@@ -51,13 +59,14 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     private Button sendResetPasswordLinkButton;
     private ImageView visibilityPasswordImageView;
     private boolean isPasswordVisible=false;
-    private String userCity,userState;
-
+    private boolean isUserAdmin=false;
+    private Context context;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view=inflater.inflate(R.layout.login_fragment_layout,container,false);
 
+        context=getContext();
         loginActivity= (LoginActivity) getActivity();
         firebaseAuth=FirebaseAuth.getInstance();
 
@@ -71,12 +80,6 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         loginButton.setOnClickListener(this);
         forgetPasswordTextView.setOnClickListener(this);
         visibilityPasswordImageView.setOnClickListener(this);
-
-        User user=GlobalStateApplication.usersHashMap.get(FirebaseAuth.getInstance().getUid());
-        if(user!=null){
-            userCity=user.getCityName();
-            userState=user.getStateName();
-        }
 
         return view;
     }
@@ -96,9 +99,29 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 
             case R.id.loginButton:
                 //if entered details are valid then we will sign in the user.
-                if (isDetailsValid()) {
-                    ProgressUtils.showKProgressDialog(loginActivity,"Login processing...");
-                    signIn();
+                if(NetworkCheck.isNetworkAvailable(context)) {
+                    if (isDetailsValid()) {
+                        ProgressUtils.showKProgressDialog(loginActivity, "Login processing...");
+                        FirebaseDatabase.getInstance().getReference("Admin").addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                for (DataSnapshot itemSnapshot : dataSnapshot.getChildren()) {
+                                    if (itemSnapshot.getValue(String.class).equalsIgnoreCase(loginEmail)) {
+                                        isUserAdmin = true;
+                                        break;
+                                    }
+                                }
+                                signIn();
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
+                    }
+                }else{
+                    Toast.makeText(context,getString(R.string.no_internet_connection),Toast.LENGTH_SHORT).show();
                 }
                 break;
             case R.id.forgetPasswordTextView:
@@ -123,13 +146,13 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     /** This below function will validate the user entered detail for login.*/
     public boolean isDetailsValid(){
 
-        isPhoneNumber= AuthUtil.isVailidPhone(emailLoginEditText.getText());
+//        isPhoneNumber= AuthUtil.isVailidPhone(emailLoginEditText.getText());
         isEmail=AuthUtil.isValidEmail(emailLoginEditText.getText());
 
-        if(isEmail||isPhoneNumber){
-            username = emailLoginEditText.getText().toString();
+        if(isEmail){
+            loginEmail = emailLoginEditText.getText().toString();
         }else{
-            emailLoginEditText.setError("Enter a valid Email/Password");
+            emailLoginEditText.setError("Enter a valid Email");
             emailLoginEditText.requestFocus();
             return false;
         }
@@ -140,7 +163,6 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
             passwordLoginEditText.requestFocus();
             return false;
         }
-
         return true;
 
     }
@@ -151,21 +173,17 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
      * using email and password */
     private void signIn()
     {
-        if(isPhoneNumber) {
-            username = getEmailForPhoneNumber();
-        }
-        firebaseAuth.signInWithEmailAndPassword(username,passwordLoginEditText.getText().toString().trim())
+        firebaseAuth.signInWithEmailAndPassword(loginEmail,passwordLoginEditText.getText().toString().trim())
                 .addOnCompleteListener(loginActivity, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if(task.isSuccessful())
                         {
 //                            loginActivity.initCurrentUser();
-                            String cityState=userCity+"_"+userState;
-                            FirebaseMessaging.getInstance().subscribeToTopic(cityState.replace(' ','_'));
-                            startActivity(new Intent(getContext(),HomeActivity.class));
-                            Toast.makeText(loginActivity, "Signed in successfully!", Toast.LENGTH_SHORT).show();
-                            ProgressUtils.cancelKprogressDialog();
+                            subscribeUserToTopicAndMoveToHomeActivity();
+                            if(isUserAdmin){
+                                CommonData.isAdmin=true;
+                            }
                         }
                         else
                         {
@@ -176,22 +194,47 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                 });
     }
 
+    private void subscribeUserToTopicAndMoveToHomeActivity() {
+        GlobalStateApplication.usersDatabaseReference.child(firebaseAuth.getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                User user=dataSnapshot.getValue(User.class);
+                if(user!=null){
+                    user.setAdmin(isUserAdmin);
+                    GlobalStateApplication.usersDatabaseReference.child(firebaseAuth.getCurrentUser().getUid()).setValue(user);
+                    String cityState=user.getCityName()+"_"+user.getStateName();
+                    FirebaseMessaging.getInstance().subscribeToTopic(cityState.replace(' ','_'));
+                    Log.i("User is ","Successfully subscribed to topic");
+                    User.setCurrentUser(user);
+                    startActivity(new Intent(getContext(),HomeActivity.class));
+                    Toast.makeText(loginActivity, "Signed in successfully!", Toast.LENGTH_SHORT).show();
+                    ProgressUtils.cancelKprogressDialog();
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
     /**This below function is used to get the email corresponding to entered phone number. I am doing this because
      * i am login the user with email and password */
 
-    String getEmailForPhoneNumber()
-    {
-        Log.i("My UID",FirebaseAuth.getInstance().getUid());
-
-        for(User user:GlobalStateApplication.usersHashMap.values()){
-            Log.i("Users name",user.getFirstName());
-        }
-        User user=GlobalStateApplication.usersHashMap.get(FirebaseAuth.getInstance().getUid());
-        if(user!=null)
-            return user.getEmail();
-
-        return "Sample@test.com";
-    }
+//    String getEmailForPhoneNumber()
+//    {
+//
+//        Log.i("My UID",FirebaseAuth.getInstance().getUid());
+//
+//        for(User user:GlobalStateApplication.usersHashMap.values()){
+//            Log.i("Users name",user.getFirstName());
+//        }
+//        User user=GlobalStateApplication.usersHashMap.get(FirebaseAuth.getInstance().getUid());
+//        if(user!=null)
+//            return user.getEmail();
+//
+//        return "Sample@test.com";
+//    }
 
 
 
@@ -204,6 +247,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         sendResetPasswordLinkButton.setBackgroundColor(Objects.requireNonNull(getActivity()).getResources().getColor(R.color.colorPrimary));
         final AlertDialog builder=new AlertDialog.Builder(getContext())
                 .setTitle("Reset Password")
+                .setIcon(R.drawable.way_for_life_logo)
                 .setCancelable(false)
                 .setView(view)
                 .setNegativeButton("Go Back",null)
@@ -212,23 +256,25 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         sendResetPasswordLinkButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 if(forgetEmailEditText.getText().toString().trim().equals("")){
                     forgetEmailEditText.setError("Please enter an email first");
                     forgetEmailEditText.requestFocus();
                 }
                 else {
+                    ProgressUtils.showKProgressDialog(context,"Sending...");
+                    builder.dismiss();
                     firebaseAuth.sendPasswordResetEmail(forgetEmailEditText.getText().toString()).
                             addOnCompleteListener(loginActivity, new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if (task.isSuccessful()) {
-                                Toast.makeText(loginActivity, "A Password reset email has been sent to your email " +
+                                Toast.makeText(loginActivity, "A password reset email has been sent to your email " +
                                         forgetEmailEditText.getText().toString(), Toast.LENGTH_SHORT).show();
-                                builder.dismiss();
+                                ProgressUtils.cancelKprogressDialog();
                             } else {
                                 Toast.makeText(loginActivity, "Something went wrong.." + task.getException().getMessage(),
                                         Toast.LENGTH_SHORT).show();
+                                ProgressUtils.cancelKprogressDialog();
                             }
                         }
                     });

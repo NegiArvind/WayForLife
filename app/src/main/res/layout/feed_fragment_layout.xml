@@ -28,8 +28,8 @@
         fab:menu_animationDelayPerItem="55"
         fab:menu_backgroundColor="@android:color/transparent"
         fab:menu_buttonSpacing="0dp"
-        fab:menu_normalColor="#dc4b3f"
-        fab:menu_colorPressed="#dc4b3f"
+        app:menu_colorNormal="@color/button_background_color"
+        app:menu_colorPressed="@color/button_background_color"
         fab:menu_colorRipple="#99d4d4d4"
         fab:menu_fab_label="Cancel"
         fab:menu_fab_size="normal"
@@ -61,16 +61,22 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/poll_image"
+            app:fab_colorNormal="@color/button_background_color"
+            app:fab_colorPressed="@color/button_background_color"
             fab:fab_label="Poll"
-            fab:fab_size="mini" />
+            fab:fab_colorRipple="#99d4d4d4"
+            fab:fab_size="mini"/>
 
         <com.github.clans.fab.FloatingActionButton
             android:id="@+id/postFloatingActionButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/post_image"
+            app:fab_colorNormal="@color/button_background_color"
+            app:fab_colorPressed="@color/button_background_color"
             fab:fab_label="Post"
-            fab:fab_size="mini" />
+            fab:fab_size="mini"
+            fab:fab_colorRipple="#99d4d4d4"/>
 
     </com.github.clans.fab.FloatingActionMenu>
 

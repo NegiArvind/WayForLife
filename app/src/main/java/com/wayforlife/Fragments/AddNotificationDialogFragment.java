@@ -71,6 +71,7 @@ public class AddNotificationDialogFragment extends DialogFragment implements Ada
         startExecutingAsynckTask();
 
         notificationToolbar=view.findViewById(R.id.notificationToolbar);
+        notificationToolbar.setTitleTextColor(getResources().getColor(R.color.md_white_1000));
         notificationToolbar.setTitle("Create new notification");
         notificationToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -112,7 +113,7 @@ public class AddNotificationDialogFragment extends DialogFragment implements Ada
         String cityState=city+"_"+state;
         cityState=cityState.replace(' ','_');
         myNotification.setCityState(cityState);
-        myNotification.setTimeDate(CommonData.getCurrentTime()+"  "+CommonData.getTodayDate());
+        myNotification.setTimeDate(CommonData.getCurrentTime()+" on "+CommonData.getTodayDate());
         GlobalStateApplication.notificationsDatabaseReference.child(cityState).push().setValue(myNotification).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
@@ -205,13 +206,13 @@ public class AddNotificationDialogFragment extends DialogFragment implements Ada
                                 cityArrayList);
                         cityNotificationSpinner.setAdapter(cityAdapter);
                     }
-                    Toast.makeText(context, state + " selected", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(context, state + " selected", Toast.LENGTH_SHORT).show();
                     break;
 
                 case R.id.cityNotificationSpinner:
                     if (cityArrayList.size() != 0) {
                         city = (String) parent.getItemAtPosition(position);
-                        Toast.makeText(context, city + " selected", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(context, city + " selected", Toast.LENGTH_SHORT).show();
                     }
                     break;
             }

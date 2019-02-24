@@ -1,6 +1,7 @@
 package com.wayforlife.Fragments;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Address;
@@ -16,6 +17,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -33,6 +35,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.wayforlife.Activities.HomeActivity;
 import com.wayforlife.Common.CommonData;
+import com.wayforlife.Common.NetworkCheck;
 import com.wayforlife.GlobalStateApplication;
 import com.wayforlife.Models.LocationAddress;
 import com.wayforlife.Models.Problem;
@@ -59,7 +62,6 @@ public class HomeMapFragment extends Fragment implements OnMapReadyCallback,Goog
 
     //Whenever Home button will be clicked then this fragment will be displayed
 
-
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,7 +87,7 @@ public class HomeMapFragment extends Fragment implements OnMapReadyCallback,Goog
             e.printStackTrace();
         }
         mapView.getMapAsync(this);
-
+        Log.i("iniside home fragment"," come");
         return view;
 
     }
@@ -149,6 +151,7 @@ public class HomeMapFragment extends Fragment implements OnMapReadyCallback,Goog
 
     @Override
     public void onMapReady(GoogleMap gMap) {
+        Log.i("map is ready now","hh");
         googleMap=gMap;
         googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
@@ -161,7 +164,6 @@ public class HomeMapFragment extends Fragment implements OnMapReadyCallback,Goog
                 return true;
             }
         });
-
         showAllTheProblemByMarker();
         googleMap.setOnMapClickListener(this);
 
@@ -171,14 +173,14 @@ public class HomeMapFragment extends Fragment implements OnMapReadyCallback,Goog
 //
 //        CameraPosition cameraPosition=new CameraPosition.Builder().target(sydney).zoom(12).build();
 //        googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-        Log.i("MapReady","-------------------------------inside it");
-        if(!hasPermission()){
-            Log.i("Permission check","Inside has permission");
-            getPermission();
-        }else{
-            Log.i("Inside","getuserlocation");
-//            getUserLocation();
-        }
+//        Log.i("MapReady","-------------------------------inside it");
+//        if(!hasPermission()){
+//            Log.i("Permission check","Inside has permission");
+//            getPermission();
+//        }else{
+//            Log.i("Inside","getuserlocation");
+////            getUserLocation();
+//        }
 
     }
 
@@ -195,8 +197,6 @@ public class HomeMapFragment extends Fragment implements OnMapReadyCallback,Goog
         homeActivity.addNewFragment(XyzProblemFragment.newInstance(serializeProblem,
                 false,""),"xyzProblemFragment");
     }
-
-
 
 
     //It will return the address from the longitude and latitude.
@@ -246,21 +246,21 @@ public class HomeMapFragment extends Fragment implements OnMapReadyCallback,Goog
         ActivityCompat.requestPermissions(homeActivity, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, CommonData.LOCATION_PERMISSION_REQUEST_CODE);
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
-        if (requestCode == CommonData.LOCATION_PERMISSION_REQUEST_CODE) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Log.i("value ","--------"+String.valueOf(hasPermission()));
-                if (!hasPermission()) {
-                    requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, CommonData.LOCATION_PERMISSION_REQUEST_CODE);
-                }else{
-//                    getUserLocation();
-                }
-            }
-        }
-    }
+//    @Override
+//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+//
+//        if (requestCode == CommonData.LOCATION_PERMISSION_REQUEST_CODE) {
+//            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+//                Log.i("value ","--------"+String.valueOf(hasPermission()));
+//                if (!hasPermission()) {
+//                    requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, CommonData.LOCATION_PERMISSION_REQUEST_CODE);
+//                }else{
+////                    getUserLocation();
+//                }
+//            }
+//        }
+//    }
 
     public static HomeMapFragment newInstance() {
         Bundle args = new Bundle();
@@ -273,6 +273,7 @@ public class HomeMapFragment extends Fragment implements OnMapReadyCallback,Goog
     public void onResume() {
         super.onResume();
         mapView.onResume();
+        homeActivity.setActionBarTitle("Home");
         //againRequestLocation();
     }
 

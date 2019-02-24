@@ -15,7 +15,9 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,11 +25,12 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
@@ -38,9 +41,11 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.wayforlife.Activities.HomeActivity;
 import com.wayforlife.Common.CommonData;
+import com.wayforlife.Common.NetworkCheck;
 import com.wayforlife.GlobalStateApplication;
 import com.wayforlife.Models.User;
 import com.wayforlife.R;
@@ -85,13 +90,15 @@ public class EditProfileFragment extends Fragment implements AdapterView.OnItemS
     private Uri choosenImageUri;
     private boolean isNumberAlsoChanged=false;
     private boolean firstNameChange=false,lastNameChange=false,cityStateChange=false;
-
+    private ProgressBar editProfileImageViewProgressBar;
+    private ImageButton cameraImageButton;
+    private Activity activity;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view=inflater.inflate(R.layout.edit_profile_fragment_layout,container,false);
-
+        activity=getActivity();
         context=getContext();
         homeActivity= (HomeActivity) getActivity();
         firstNameEditProfileEditText=view.findViewById(R.id.editProfileFirstNameEditText);
@@ -101,56 +108,17 @@ public class EditProfileFragment extends Fragment implements AdapterView.OnItemS
         editProfilestateSpinner=view.findViewById(R.id.editProfilestateSpinner);
         editProfileSubmitButton=view.findViewById(R.id.editPrifleSubmitButton);
         editProfileUserImageView=view.findViewById(R.id.editProfileUserImageView);
+        editProfileImageViewProgressBar=view.findViewById(R.id.editProfileImageViewProgressBar);
+        cameraImageButton=view.findViewById(R.id.cameraImageButton);
 
         cityArrayList=new ArrayList<>();
-
-//        editProfileSubmitButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-//                if(isFirstNameChanged()||isLastNameChanged()||isNumberChanged()||isStateCityChanged()){
-//                    showEditAlertDialog();
-//                }
-//                else{
-//                    Toast.makeText(context, "You haven't make any changes", Toast.LENGTH_SHORT).show();
-//                }
-//                if(isStateCityChanged()){
-//                    user.setStateName(changedState);
-//                    user.setCityName(changedCity);
-//                }
-//                if(firstNameEditProfileEditText.getText().toString().trim().length()!=0)
-//                user.setFirstName(firstNameEditProfileEditText.getText().toString());
-//
-//                user.setLastName(lastNameEditProfileEditText.getText().toString());
-//                if(isNumberChanged()){
-//                    if(AuthUtil.isVailidPhone(newPhoneNumber)) {
-//                        //Go for verification
-//                        user.setPhoneNumber(newPhoneNumber);
-//                        showDialogFragment(VerificationFragment1.newInstance(user),"verificationFragment");
-////                        homeActivity.addNewFragment(VerificationFragment.newInstance(user), "verificationFragment");
-//                    }else{
-//                        phoneNumberEditProfileEditText.setError("Please enter correct number");
-//                        phoneNumberEditProfileEditText.requestFocus();
-//                    }
-//                }else{
-//                    GlobalStateApplication.usersDatabaseReference.child(CommonData.firebaseCurrentUserUid).setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
-//                        @Override
-//                        public void onComplete(@NonNull Task<Void> task) {
-//                            if(task.isSuccessful()){
-//                                Toast.makeText(context, "Profile successfully edited", Toast.LENGTH_SHORT).show();
-//                            }
-//                        }
-//                    });
-//                }
-//            }
-//        });
         editProfileSubmitButton.setOnClickListener(this);
         editProfileUserImageView.setOnClickListener(this);
-
+        cameraImageButton.setOnClickListener(this);
 
         startExecutingAsynckTask();
 
-        user=GlobalStateApplication.usersHashMap.get(CommonData.firebaseCurrentUserUid);
+        user=User.getCurrentUser();
         if(user!=null){
             setAllDetails();
         }
@@ -173,9 +141,22 @@ public class EditProfileFragment extends Fragment implements AdapterView.OnItemS
         changedState=earlierStateName;
 
         if(user.getImageUrl()!=null){
-            Picasso.with(context).load(user.getImageUrl()).into(editProfileUserImageView);
+            Picasso.with(context).load(user.getImageUrl()).into(editProfileUserImageView, new Callback() {
+                @Override
+                public void onSuccess() {
+                    if(editProfileImageViewProgressBar!=null) {
+                        editProfileImageViewProgressBar.setVisibility(View.GONE);
+                    }
+                }
+
+                @Override
+                public void onError() {
+
+                }
+            });
         }else{
-            editProfileUserImageView.setImageResource(R.drawable.ic_launcher_background);
+            editProfileImageViewProgressBar.setVisibility(View.GONE);
+            editProfileUserImageView.setImageResource(R.drawable.circular_person_image_background);
         }
 
         firstNameEditProfileEditText.setText(earlierFirstName);
@@ -197,7 +178,6 @@ public class EditProfileFragment extends Fragment implements AdapterView.OnItemS
         ArrayAdapter<String> tempAdapter=new ArrayAdapter<>(context,R.layout.support_simple_spinner_dropdown_item,
                 tempArrayList);
         editProfileCitySpinner.setAdapter(tempAdapter);
-
     }
 
     @Override
@@ -210,15 +190,33 @@ public class EditProfileFragment extends Fragment implements AdapterView.OnItemS
                 isNumberAlsoChanged=isNumberChanged();
 
                 if(firstNameChange||lastNameChange||cityStateChange||isNumberAlsoChanged||choosenImageUri!=null){
-                    showEditAlertDialog();
+                    if(NetworkCheck.isNetworkAvailable(context)) {
+                        showEditAlertDialog();
+                    }else{
+                        Toast toast=Toast.makeText(context,getString(R.string.no_internet_connection),Toast.LENGTH_SHORT);
+                        toast.setGravity(Gravity.CENTER,0,0);
+                        toast.show();
+                    }
                 }
                 else{
                     Toast.makeText(context, "You haven't make any changes", Toast.LENGTH_SHORT).show();
                 }
                 break;
             case R.id.editProfileUserImageView:
+                showProfilePhotoDialogFragment(ProfilePhotoDialogFragment.newInstance(User.currentUser.getImageUrl(),true));
+                break;
+            case R.id.cameraImageButton:
                 chooseImage();
                 break;
+        }
+    }
+
+    private void showProfilePhotoDialogFragment(ProfilePhotoDialogFragment profilePhotoDialogFragment) {
+        FragmentTransaction fragmentTransaction;
+        AppCompatActivity appCompatActivity= (AppCompatActivity) context;
+        if (appCompatActivity.getSupportFragmentManager() != null) {
+            fragmentTransaction = appCompatActivity.getSupportFragmentManager().beginTransaction();
+            profilePhotoDialogFragment.show(fragmentTransaction,getString(R.string.profilePhotoDialogFragment));
         }
     }
 
@@ -266,7 +264,8 @@ public class EditProfileFragment extends Fragment implements AdapterView.OnItemS
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if(task.isSuccessful()){
-                    Toast.makeText(context, "Profile successfully Updated", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "Profile successfully Updated.", Toast.LENGTH_SHORT).show();
+                    homeActivity.initializeAndSetHeaderView();
                     if(cityStateChange){
                         String oldTopic=tempCityName+'_'+tempStateName;
                         final String newTopic=changedCity+'_'+changedState;
@@ -287,7 +286,7 @@ public class EditProfileFragment extends Fragment implements AdapterView.OnItemS
 
     private boolean isFirstNameChanged() {
         changedFirstName=firstNameEditProfileEditText.getText().toString().trim();
-        if(changedFirstName.equalsIgnoreCase(earlierFirstName)){
+        if(changedFirstName.equals(earlierFirstName)){
             return false;
         }
         user.setFirstName(changedFirstName);
@@ -297,7 +296,7 @@ public class EditProfileFragment extends Fragment implements AdapterView.OnItemS
 
     private boolean isLastNameChanged() {
         changedLastName=lastNameEditProfileEditText.getText().toString().trim();
-        if(changedLastName.equalsIgnoreCase(earlierLastName)){
+        if(changedLastName.equals(earlierLastName)){
             return false;
         }
         user.setLastName(changedLastName);
@@ -375,13 +374,13 @@ public class EditProfileFragment extends Fragment implements AdapterView.OnItemS
                             cityArrayList);
 //                        cityAdapter.notifyDataSetChanged();
                     editProfileCitySpinner.setAdapter(cityAdapter);
-                    Toast.makeText(context, changedState + " selected", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(context, changedState + " selected", Toast.LENGTH_SHORT).show();
                     break;
 
                 case R.id.editProfileCitySpinner:
                     if (cityArrayList.size() != 0) {
                         changedCity = (String) parent.getItemAtPosition(position);
-                        Toast.makeText(context, changedCity + " selected", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(context, changedCity + " selected", Toast.LENGTH_SHORT).show();
                     }
                     break;
             }
@@ -393,7 +392,8 @@ public class EditProfileFragment extends Fragment implements AdapterView.OnItemS
      problem data with image url into firebase database*/
     private void uploadImageIntoFirebaseStorage() {
         ProgressUtils.showKProgressDialog(context,"Updating...");
-        String filename= UUID.randomUUID().toString();
+//        String filename= UUID.randomUUID().toString();
+        String filename="profile_picture_"+CommonData.firebaseCurrentUserUid;
         final StorageReference storageReference=FirebaseStorage.getInstance().getReference("userProfileImages/"+filename);
         storageReference.putFile(choosenImageUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
             @Override
@@ -425,9 +425,9 @@ public class EditProfileFragment extends Fragment implements AdapterView.OnItemS
 
     private void startShowingDialogFragment() {
         if(cityStateChange) {
-            showDialogFragment(VerificationFragment.newInstance(user, true,tempCityName+'_'+tempStateName), getString(R.string.verificationDialogFragmentTag));
+            showDialogFragment(VerificationDialogFragment.newInstance(user, true,tempCityName+'_'+tempStateName), getString(R.string.verificationDialogFragmentTag));
         }else{
-            showDialogFragment(VerificationFragment.newInstance(user, true,null), getString(R.string.verificationDialogFragmentTag));
+            showDialogFragment(VerificationDialogFragment.newInstance(user, true,null), getString(R.string.verificationDialogFragmentTag));
         }
     }
 
@@ -564,4 +564,11 @@ public class EditProfileFragment extends Fragment implements AdapterView.OnItemS
     public void onNothingSelected(AdapterView<?> parent) {
 
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        homeActivity.setActionBarTitle("Edit Profile");
+    }
+
 }

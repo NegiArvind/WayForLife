@@ -16,16 +16,20 @@
         android:layout_height="0dp"
         android:layout_weight="1"/>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1sp"
+        android:background="@color/md_grey_400"/>
+
     <android.support.design.widget.BottomNavigationView
         android:id="@+id/bottom_navigation_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginEnd="0sp"
         android:layout_marginStart="0sp"
-        app:itemBackground="@color/colorPrimary"
-        app:itemIconTint="@color/md_white_1000"
-        app:itemTextColor="@color/md_white_1000"
-        android:background="@color/colorPrimary"
+        android:background="@color/md_grey_300"
+        app:itemIconTint="@drawable/bottom_navigation_icon_selector"
+        app:itemTextColor="@drawable/bottom_navigation_icon_selector"
         app:menu="@menu/bottom_navigation"
         />
 

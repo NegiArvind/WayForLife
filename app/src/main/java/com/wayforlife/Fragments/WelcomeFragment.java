@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.daimajia.slider.library.SliderLayout;
@@ -24,12 +25,12 @@ import com.wayforlife.R;
 
 public class WelcomeFragment extends Fragment {
 
-    private ImageView wayForLifeImageView;
     private TextView descriptionTextView;
     private Button letsGetStartedButton;
     private SliderLayout bannerSliderLayout;
     private FirebaseDatabase firebaseDatabase;
     private LoginActivity loginActivity;
+    private ProgressBar welcomeProgressBar;
 
     @Nullable
     @Override
@@ -39,10 +40,10 @@ public class WelcomeFragment extends Fragment {
         firebaseDatabase=FirebaseDatabase.getInstance();
         loginActivity= (LoginActivity) getActivity();
 
-        wayForLifeImageView=view.findViewById(R.id.wayForLifeImageView);
         descriptionTextView=view.findViewById(R.id.descriptionTextView);
         letsGetStartedButton=view.findViewById(R.id.letsGetStartedButton);
         bannerSliderLayout=view.findViewById(R.id.bannerSliderLayout);
+        welcomeProgressBar=view.findViewById(R.id.welcomeProgressBar);
 
         fetchWelcomeImages();
         getWelcomeQuotes();
@@ -50,7 +51,7 @@ public class WelcomeFragment extends Fragment {
         letsGetStartedButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                loginActivity.addNewFragment(LoginFragment.newInstance());
+                loginActivity.addNewFragment(LoginFragment.newInstance(),getString(R.string.loginFragmentTag));
             }
         });
         return view;
@@ -60,6 +61,9 @@ public class WelcomeFragment extends Fragment {
         firebaseDatabase.getReference("welcomeBanner").addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                if(welcomeProgressBar!=null){
+                    welcomeProgressBar.setVisibility(View.GONE);
+                }
                 setBannerOnLayout(dataSnapshot.getValue(String.class));
             }
 

@@ -4,19 +4,27 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <ProgressBar
+        android:id="@+id/eventProgressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"/>
+
     <com.applandeo.materialcalendarview.CalendarView
         android:id="@+id/calenderView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:visibility="invisible"
         app:headerColor="@color/colorPrimary"
         android:layout_centerInParent="true"/>
 
-    <com.github.clans.fab.FloatingActionButton
+    <android.support.design.widget.FloatingActionButton
         android:id="@+id/addNewEventFloatingActionButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/event_note_image"
         android:visibility="invisible"
+        app:backgroundTint="@color/button_background_color"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:layout_marginBottom="11dp"

@@ -49,6 +49,7 @@ public class AddEventDialogFragment extends DialogFragment implements View.OnCli
         View view=inflater.inflate(R.layout.add_event_dialog_fragment_layout,container,false);
         context=getContext();
         eventToolbar=view.findViewById(R.id.eventToolbar);
+        eventToolbar.setTitleTextColor(getResources().getColor(R.color.md_white_1000));
         eventToolbar.setTitle("Add new event");
         eventToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
