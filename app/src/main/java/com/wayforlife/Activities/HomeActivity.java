@@ -2,6 +2,7 @@ package com.wayforlife.Activities;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -12,8 +13,10 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.app.ActionBar;
 import android.text.Html;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -52,12 +55,16 @@ public class HomeActivity extends AppCompatActivity
     private TextView nameNavigationTextView;
     private NavigationView navigationView;
     private BottomNavigationView bottomNavigationView;
+    private Toolbar toolbar;
+    private ImageView facebookLogoImageView,twitterLogoImageView,instagramLogoImageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
+        toolbar.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+        toolbar.setTitleTextColor(getResources().getColor(R.color.md_white_1000));
         setSupportActionBar(toolbar);
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -73,7 +80,7 @@ public class HomeActivity extends AppCompatActivity
 
         bottomNavigationView=findViewById(R.id.bottom_navigation_view);
         bottomNavigationView.setOnNavigationItemSelectedListener(this);
-        Toast.makeText(getApplicationContext(),"Inside of home activty",Toast.LENGTH_SHORT).show();
+//        Toast.makeText(getApplicationContext(),"Inside of home activty",Toast.LENGTH_SHORT).show();
         Log.i("inside of home ", "activity");
 
 //        for(String string:GlobalStateApplication.usersHashMap.keySet()){
@@ -82,10 +89,9 @@ public class HomeActivity extends AppCompatActivity
         bottomNavigationView.setSelectedItemId(R.id.home_bottom_navigation);
         addNewFragment(HomeMapFragment.newInstance(),"homeMapFragment");
         initializeAndSetHeaderView();
-
     }
 
-    private void initializeAndSetHeaderView() {
+    public void initializeAndSetHeaderView() {
 
         View view=navigationView.getHeaderView(0);
         userNavigationImageView=view.findViewById(R.id.userImageView);
@@ -96,7 +102,7 @@ public class HomeActivity extends AppCompatActivity
             if(User.getCurrentUser().getImageUrl()!=null) {
                 Picasso.with(HomeActivity.this).load(User.getCurrentUser().getImageUrl()).into(userNavigationImageView);
             }else{
-                userNavigationImageView.setImageResource(R.drawable.person_image);
+                userNavigationImageView.setImageResource(R.drawable.circular_person_image_background);
             }
             emailNavigationTextView.setText(User.getCurrentUser().getEmail());
             nameNavigationTextView.setText(User.getCurrentUser().getFirstName());
@@ -193,6 +199,16 @@ public class HomeActivity extends AppCompatActivity
             case R.id.events_bottom_navigation:
                 addNewFragment(EventFragment.newInstance(),getString(R.string.eventFragmentTag));
                 break;
+            case R.id.feedback_navigation:
+                sendEmailIntent("Feedback for your organisation app");
+                break;
+            case R.id.share_navigation:
+                shareAppWithFriends();
+                break;
+            case R.id.rate_us_navigation:
+                rateMeFunction();
+                break;
+
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -207,11 +223,72 @@ public class HomeActivity extends AppCompatActivity
 
     }
 
+    private void shareAppWithFriends() {
+        String appUrl="https://play.google.com/store/apps/details?id="+getPackageName();
+        String shareBody = "Non Governmental Organisation app : "+appUrl;
+        Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+        sharingIntent.setType("text/plain");
+        sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Way For Life");
+        sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
+        startActivity(Intent.createChooser(sharingIntent,"Share with"));
+    }
+
+    private void rateMeFunction() {
+        Uri uri = Uri.parse("market://details?id=" + getPackageName());
+        Intent goToMarket = new Intent(Intent.ACTION_VIEW, uri);
+        // To count with Play market backstack, After pressing back button,
+        // to taken back to our application, we need to add following flags to intent.
+        goToMarket.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY |
+                Intent.FLAG_ACTIVITY_NEW_DOCUMENT |
+                Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
+        try {
+            startActivity(goToMarket);
+        } catch (ActivityNotFoundException e) {
+            startActivity(new Intent(Intent.ACTION_VIEW,
+                    Uri.parse("http://play.google.com/store/apps/details?id=" + getPackageName())));
+        }
+    }
+
+    private void sendEmailIntent(String subject) {
+        Intent emailIntent=new Intent(Intent.ACTION_SENDTO,Uri.fromParts("mailto","wayforlife@gmail.com",null));
+        emailIntent.putExtra(Intent.EXTRA_SUBJECT,subject); //subject of mail
+        emailIntent.putExtra(Intent.EXTRA_TEXT,""); //Body of mail
+        startActivity(Intent.createChooser(emailIntent,"Send mail"));
+    }
+
+
 
     private void showFollowUsDialog() {
-        new AlertDialog.Builder(HomeActivity.this)
-                .setTitle("Follow Us")
-                .show();
+        final AlertDialog alertDialog= new AlertDialog.Builder(HomeActivity.this).create();
+        alertDialog.setTitle("Follow Us");
+        LayoutInflater layoutInflater=LayoutInflater.from(this);
+        View view=layoutInflater.inflate(R.layout.follow_us_alert_dialog_layout,null,false);
+        facebookLogoImageView=view.findViewById(R.id.facebookLogoImageView);
+        twitterLogoImageView=view.findViewById(R.id.twitterLogoImageView);
+        instagramLogoImageView=view.findViewById(R.id.instagramLogoImageView);
+        facebookLogoImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                moveToWebPage(CommonData.facebookProfileUrl);
+                alertDialog.dismiss();
+            }
+        });
+        twitterLogoImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                moveToWebPage(CommonData.twitterProfileUrl);
+                alertDialog.dismiss();
+            }
+        });
+        instagramLogoImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                moveToWebPage(CommonData.instagramProfileUrl);
+                alertDialog.dismiss();
+            }
+        });
+        alertDialog.setView(view);
+        alertDialog.show();
     }
 
     private void showLogOutAlertDialog() {

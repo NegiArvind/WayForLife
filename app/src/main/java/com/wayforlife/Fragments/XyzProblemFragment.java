@@ -14,6 +14,8 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -165,7 +167,6 @@ public class XyzProblemFragment extends Fragment implements View.OnClickListener
         locationEditText.setFocusable(false);
 
         chooseImageProgressBar.setVisibility(View.GONE);
-
     }
 
     /**below method will set all the problem details onto their position. This below method will be called when
@@ -184,6 +185,12 @@ public class XyzProblemFragment extends Fragment implements View.OnClickListener
 
             }
         });
+        problemImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showProfilePhotoDialogFragment(ProfilePhotoDialogFragment.newInstance(problem.getImageUrl(),false));
+            }
+        });
 
         locationEditText.setText(locationAddress.getAddress()+"Latitude: "+locationAddress.getLatitude()+" Longitude: "+
         locationAddress.getLongitude());
@@ -198,6 +205,14 @@ public class XyzProblemFragment extends Fragment implements View.OnClickListener
         plusImageView.setVisibility(View.GONE);
     }
 
+    private void showProfilePhotoDialogFragment(ProfilePhotoDialogFragment profilePhotoDialogFragment) {
+        FragmentTransaction fragmentTransaction;
+        AppCompatActivity appCompatActivity= (AppCompatActivity) context;
+        if (appCompatActivity.getSupportFragmentManager() != null) {
+            fragmentTransaction = appCompatActivity.getSupportFragmentManager().beginTransaction();
+            profilePhotoDialogFragment.show(fragmentTransaction,getString(R.string.profilePhotoDialogFragment));
+        }
+    }
     @Override
     public void onClick(View view) {
         switch (view.getId()) {

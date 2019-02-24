@@ -17,6 +17,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -34,6 +35,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.wayforlife.Activities.HomeActivity;
 import com.wayforlife.Common.CommonData;
+import com.wayforlife.Common.NetworkCheck;
 import com.wayforlife.GlobalStateApplication;
 import com.wayforlife.Models.LocationAddress;
 import com.wayforlife.Models.Problem;
@@ -162,7 +164,6 @@ public class HomeMapFragment extends Fragment implements OnMapReadyCallback,Goog
                 return true;
             }
         });
-
         showAllTheProblemByMarker();
         googleMap.setOnMapClickListener(this);
 

@@ -54,6 +54,11 @@
     <string name="sign_up_button_text">SIGN UP</string>
     <string name="verifying_message">Sit back &amp; relax! while we verify your mobile number</string>
     <string name="profilePhotoDialogFragment">profilePhotoDialogFragment</string>
+    <string name="no_internet_connection">No internet connection</string>
+    <string name="share">Share</string>
+    <string name="rate_us">Rate us</string>
+    <string name="feedback">Feedback</string>
+    <string name="profile">Profile</string>
 
 
 </resources>

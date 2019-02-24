@@ -13,7 +13,7 @@
         android:layout_height="70dp"
         android:layout_marginStart="30dp"
         android:layout_marginTop="30dp"
-        android:src="@drawable/person_image"
+        android:src="@drawable/circular_person_image_background"
         app:civ_border_color="@color/whiteColor"
         app:civ_border_width="3dp" />
 

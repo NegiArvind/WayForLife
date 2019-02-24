@@ -10,6 +10,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.text.InputType;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +31,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.wayforlife.Activities.LoginActivity;
+import com.wayforlife.Common.NetworkCheck;
 import com.wayforlife.Models.User;
 import com.wayforlife.R;
 import com.wayforlife.Utils.AuthUtil;
@@ -119,7 +121,13 @@ public class SignUpFragment extends Fragment implements AdapterView.OnItemSelect
     public void onClick(View v) {
         switch(v.getId()){
             case R.id.sendOtpButton:
-                verifyAndSendOtp();
+                if(NetworkCheck.isNetworkAvailable(context)) {
+                    verifyAndSendOtp();
+                }else{
+                    Toast toast=Toast.makeText(context,getString(R.string.no_internet_connection),Toast.LENGTH_SHORT);
+                    toast.setGravity(Gravity.CENTER,0,0);
+                    toast.show();
+                }
                 break;
 
             case R.id.visibilityPasswordImageView:

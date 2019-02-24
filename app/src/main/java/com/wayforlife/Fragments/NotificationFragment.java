@@ -24,6 +24,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.wayforlife.Activities.HomeActivity;
 import com.wayforlife.Adapters.NotificationCustomArrayAdapter;
 import com.wayforlife.Common.CommonData;
+import com.wayforlife.Common.NetworkCheck;
 import com.wayforlife.GlobalStateApplication;
 import com.wayforlife.Models.MyNotification;
 import com.wayforlife.Models.User;
@@ -85,9 +86,16 @@ public class NotificationFragment extends Fragment {
 
         notificationCustomArrayAdapter=new NotificationCustomArrayAdapter(context,myNotificationArrayList);
         notificationRecyclerView.setAdapter(notificationCustomArrayAdapter);
-
-        checkCityStateNodeExistIfYesThenFetchData(cityState);
-
+        if(NetworkCheck.isNetworkAvailable(context)) {
+            checkCityStateNodeExistIfYesThenFetchData(cityState);
+        }else{
+            if(notificationProgressBar!=null) {
+                notificationProgressBar.setVisibility(View.GONE);
+            }
+            Toast toast=Toast.makeText(context,getString(R.string.no_internet_connection),Toast.LENGTH_SHORT);
+            toast.setGravity(Gravity.CENTER,0,0);
+            toast.show();
+        }
 
         return view;
     }

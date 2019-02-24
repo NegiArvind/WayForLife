@@ -1,43 +1,34 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light">
+    <style name="AppTheme" parent="@style/Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="actionBarStyle">@style/MyActionBar</item>
     </style>
 
 
-    <style name="TextAppearance.AppCompat.Widget.ActionBar.Title" parent="@android:style/TextAppearance">
+    <style name="MyActionBar" parent="@style/Widget.AppCompat.ActionBar.Solid">
+        <item name="titleTextStyle">@style/MyTitleTextStyle</item>
+    </style>
+
+    <style name="MyTitleTextStyle" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
         <item name="android:textColor">@color/md_white_1000</item>
-        <item name="android:titleTextColor" tools:ignore="NewApi">@color/md_white_1000</item>
     </style>
+
+    <!--<style name="TextAppearance.AppCompat.Widget.ActionBar.Title" parent="@android:style/TextAppearance">-->
+        <!--<item name="android:textColor">@color/md_white_1000</item>-->
+    <!--</style>-->
 
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
 
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
-
-    <style name="FullScreenDialogStyle" parent="Theme.AppCompat.Dialog">
-        <item name="android:windowNoTitle">true</item>
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
-
-        <!-- Set this to true if you want Full Screen without status bar -->
-        <item name="android:windowFullscreen">false</item>
-
-        <item name="android:windowIsFloating">false</item>
-
-        <!-- This is important! Don't forget to set window background -->
-        <item name="android:windowBackground">@color/md_white_1000</item>
-
-        <!-- Additionally if you want animations when dialog opening -->
-        <!--<item name="android:windowEnterAnimation">@anim/slide_up</item>-->
-        <!--<item name="android:windowExitAnimation">@anim/slide_down</item>-->
+    <style name="ToolBarTheme" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:textColorSecondary">@color/md_white_1000</item>
     </style>
 
 </resources>

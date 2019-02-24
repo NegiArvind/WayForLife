@@ -17,6 +17,7 @@
             android:id="@+id/commentToolbar"
             android:layout_width="match_parent"
             app:navigationIcon="@drawable/back_arrow_image"
+            android:theme="@style/ToolBarTheme"
             android:layout_height="wrap_content">
 
         </android.support.v7.widget.Toolbar>
@@ -60,7 +61,7 @@
                     android:id="@+id/feedUserImageView"
                     android:layout_width="50sp"
                     android:layout_height="50sp"
-                    android:src="@drawable/person_image"/>
+                    android:src="@drawable/circular_person_image_background"/>
 
                 <TextView
                     android:id="@+id/feedUserNameTextView"
@@ -243,17 +244,23 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
-                    <ProgressBar
-                        android:id="@+id/currentUserImageViewProgressBar"
+                    <RelativeLayout
                         android:layout_width="30sp"
-                        android:layout_height="30sp" />
+                        android:layout_height="30sp">
 
-                    <de.hdodenhof.circleimageview.CircleImageView
-                        android:layout_gravity="center_vertical"
-                        android:id="@+id/currentUserImageView"
-                        android:layout_width="30sp"
-                        android:layout_height="30sp"
-                        android:src="@drawable/person_image"/>
+                        <ProgressBar
+                            android:id="@+id/currentUserImageViewProgressBar"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent" />
+
+                        <de.hdodenhof.circleimageview.CircleImageView
+                            android:layout_gravity="center_vertical"
+                            android:id="@+id/currentUserImageView"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:src="@drawable/circular_person_image_background"/>
+
+                    </RelativeLayout>
 
                     <EditText
                         android:id="@+id/commentEditText"

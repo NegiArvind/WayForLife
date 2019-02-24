@@ -26,6 +26,8 @@ public class ProfilePhotoDialogFragment extends DialogFragment {
     private Toolbar profilePhotoToolbar;
     private Context context;
     private ProgressBar profilePhotoProgressBar;
+    private String imageUrl;
+    private boolean isProfilePhoto;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -43,40 +45,53 @@ public class ProfilePhotoDialogFragment extends DialogFragment {
         profilePhotoImageView.getLayoutParams().height= ViewGroup.LayoutParams.MATCH_PARENT;
 
         context=getContext();
+        profilePhotoToolbar.setBackgroundColor(getResources().getColor(R.color.md_black_1000));
         profilePhotoToolbar.setTitleTextColor(getResources().getColor(R.color.md_white_1000));
-        profilePhotoToolbar.setTitle("Profile photo");
+
+        if(getArguments()!=null){
+            imageUrl=getArguments().getString("imageUrl");
+            isProfilePhoto=getArguments().getBoolean("isProfilePhoto");
+            setImage(imageUrl);
+            if(isProfilePhoto) {
+                profilePhotoToolbar.setTitle("Profile photo");
+            }else{
+                profilePhotoToolbar.setTitle("Problem Image");
+            }
+        }
         profilePhotoToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dismiss();
             }
         });
+        return view;
+    }
 
-        if(User.currentUser.getImageUrl()!=null){
-            Picasso.with(context).load(User.currentUser.getImageUrl()).into(profilePhotoImageView, new Callback() {
+    private void setImage(String imageUrl) {
+        if(imageUrl==null){
+            if(profilePhotoProgressBar!=null) {
+                profilePhotoProgressBar.setVisibility(View.GONE);
+            }
+            profilePhotoImageView.setImageResource(R.drawable.circular_person_image_background);
+        }else{
+            Picasso.with(context).load(imageUrl).into(profilePhotoImageView, new Callback() {
                 @Override
                 public void onSuccess() {
-                    if(profilePhotoProgressBar!=null) {
                         profilePhotoProgressBar.setVisibility(View.GONE);
-                    }
                 }
                 @Override
                 public void onError() {
 
                 }
             });
-        }else{
-            if(profilePhotoProgressBar!=null) {
-                profilePhotoProgressBar.setVisibility(View.GONE);
-            }
-            profilePhotoImageView.setImageResource(R.drawable.person_image);
         }
-        return view;
     }
 
-    public static ProfilePhotoDialogFragment newInstance() {
+    public static ProfilePhotoDialogFragment newInstance(String imageUrl,boolean isProfilePhoto) {
 
         Bundle args = new Bundle();
+        args.putString("imageUrl",imageUrl);
+        args.putBoolean("isProfilePhoto",isProfilePhoto);
         ProfilePhotoDialogFragment fragment = new ProfilePhotoDialogFragment();
         fragment.setArguments(args);
         return fragment;

@@ -9,6 +9,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,6 +32,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.wayforlife.Activities.HomeActivity;
 import com.wayforlife.Activities.LoginActivity;
+import com.wayforlife.Common.NetworkCheck;
 import com.wayforlife.Models.SerializeUser;
 import com.wayforlife.Models.User;
 import com.wayforlife.R;
@@ -171,14 +173,26 @@ public class VerificationDialogFragment extends DialogFragment implements View.O
         if(v.getId()==R.id.signUpButton){
             if(!isPhoneNumberVerified){
                 if(otpEditText.getText().toString().trim().length()!=0) {
-                    verifyPhoneNumberWithCode(otpEditText.getText().toString().trim());
+                    if(NetworkCheck.isNetworkAvailable(context)) {
+                        verifyPhoneNumberWithCode(otpEditText.getText().toString().trim());
+                    }else{
+                        Toast toast=Toast.makeText(context,getString(R.string.no_internet_connection),Toast.LENGTH_SHORT);
+                        toast.setGravity(Gravity.CENTER,0,0);
+                        toast.show();
+                    }
                 }
                 else{
                     Toast.makeText(context,"Please enter otp first",Toast.LENGTH_SHORT).show();
                 }
             }
         }else if(v.getId()==R.id.resendOtpButton){
-            resendAlertDialog();
+            if(NetworkCheck.isNetworkAvailable(context)) {
+                resendAlertDialog();
+            }else{
+                Toast toast=Toast.makeText(context,getString(R.string.no_internet_connection),Toast.LENGTH_SHORT);
+                toast.setGravity(Gravity.CENTER,0,0);
+                toast.show();
+            }
         }
     }
 
@@ -261,6 +275,7 @@ public class VerificationDialogFragment extends DialogFragment implements View.O
                             });
                         }
                         Toast.makeText(context, "Profile successfully edited", Toast.LENGTH_SHORT).show();
+                        homeActivity.initializeAndSetHeaderView();
                         homeActivity.addNewFragment(EditProfileFragment.newInstance(),getResources().getString(R.string.editProfileFragmentTag));
                     }else {
                         Toast.makeText(context, "Sign Up successful.", Toast.LENGTH_SHORT).show();

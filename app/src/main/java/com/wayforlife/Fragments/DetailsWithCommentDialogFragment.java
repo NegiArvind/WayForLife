@@ -82,6 +82,8 @@ public class DetailsWithCommentDialogFragment extends DialogFragment implements 
         context=getContext();
 
         toolbar=view.findViewById(R.id.commentToolbar);
+        toolbar.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+        toolbar.setTitleTextColor(getResources().getColor(R.color.md_white_1000));
         toolbar.setTitle("Comments");
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -317,7 +319,7 @@ public class DetailsWithCommentDialogFragment extends DialogFragment implements 
                 }
             });
         } else {
-            feedUserImageView.setImageResource(R.drawable.person_image);
+            feedUserImageView.setImageResource(R.drawable.circular_person_image_background);
         }
 
         if (User.getCurrentUser().getImageUrl() != null) {
@@ -335,7 +337,7 @@ public class DetailsWithCommentDialogFragment extends DialogFragment implements 
                 }
             });
         } else {
-            currentUserImageView.setImageResource(R.drawable.person_image);
+            currentUserImageView.setImageResource(R.drawable.circular_person_image_background);
         }
 
         feedUserNameTextView.setText(feedUser.getFirstName());

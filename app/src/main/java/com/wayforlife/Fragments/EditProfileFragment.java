@@ -17,6 +17,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,6 +45,7 @@ import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.wayforlife.Activities.HomeActivity;
 import com.wayforlife.Common.CommonData;
+import com.wayforlife.Common.NetworkCheck;
 import com.wayforlife.GlobalStateApplication;
 import com.wayforlife.Models.User;
 import com.wayforlife.R;
@@ -153,7 +155,8 @@ public class EditProfileFragment extends Fragment implements AdapterView.OnItemS
                 }
             });
         }else{
-            editProfileUserImageView.setImageResource(R.drawable.ic_launcher_background);
+            editProfileImageViewProgressBar.setVisibility(View.GONE);
+            editProfileUserImageView.setImageResource(R.drawable.circular_person_image_background);
         }
 
         firstNameEditProfileEditText.setText(earlierFirstName);
@@ -175,7 +178,6 @@ public class EditProfileFragment extends Fragment implements AdapterView.OnItemS
         ArrayAdapter<String> tempAdapter=new ArrayAdapter<>(context,R.layout.support_simple_spinner_dropdown_item,
                 tempArrayList);
         editProfileCitySpinner.setAdapter(tempAdapter);
-
     }
 
     @Override
@@ -188,19 +190,24 @@ public class EditProfileFragment extends Fragment implements AdapterView.OnItemS
                 isNumberAlsoChanged=isNumberChanged();
 
                 if(firstNameChange||lastNameChange||cityStateChange||isNumberAlsoChanged||choosenImageUri!=null){
-                    showEditAlertDialog();
+                    if(NetworkCheck.isNetworkAvailable(context)) {
+                        showEditAlertDialog();
+                    }else{
+                        Toast toast=Toast.makeText(context,getString(R.string.no_internet_connection),Toast.LENGTH_SHORT);
+                        toast.setGravity(Gravity.CENTER,0,0);
+                        toast.show();
+                    }
                 }
                 else{
                     Toast.makeText(context, "You haven't make any changes", Toast.LENGTH_SHORT).show();
                 }
                 break;
             case R.id.editProfileUserImageView:
-                showProfilePhotoDialogFragment(ProfilePhotoDialogFragment.newInstance());
+                showProfilePhotoDialogFragment(ProfilePhotoDialogFragment.newInstance(User.currentUser.getImageUrl(),true));
                 break;
             case R.id.cameraImageButton:
                 chooseImage();
                 break;
-
         }
     }
 
@@ -257,7 +264,8 @@ public class EditProfileFragment extends Fragment implements AdapterView.OnItemS
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if(task.isSuccessful()){
-                    Toast.makeText(context, "Profile successfully Updated", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "Profile successfully Updated.", Toast.LENGTH_SHORT).show();
+                    homeActivity.initializeAndSetHeaderView();
                     if(cityStateChange){
                         String oldTopic=tempCityName+'_'+tempStateName;
                         final String newTopic=changedCity+'_'+changedState;
@@ -278,7 +286,7 @@ public class EditProfileFragment extends Fragment implements AdapterView.OnItemS
 
     private boolean isFirstNameChanged() {
         changedFirstName=firstNameEditProfileEditText.getText().toString().trim();
-        if(changedFirstName.equalsIgnoreCase(earlierFirstName)){
+        if(changedFirstName.equals(earlierFirstName)){
             return false;
         }
         user.setFirstName(changedFirstName);
@@ -288,7 +296,7 @@ public class EditProfileFragment extends Fragment implements AdapterView.OnItemS
 
     private boolean isLastNameChanged() {
         changedLastName=lastNameEditProfileEditText.getText().toString().trim();
-        if(changedLastName.equalsIgnoreCase(earlierLastName)){
+        if(changedLastName.equals(earlierLastName)){
             return false;
         }
         user.setLastName(changedLastName);
@@ -384,7 +392,8 @@ public class EditProfileFragment extends Fragment implements AdapterView.OnItemS
      problem data with image url into firebase database*/
     private void uploadImageIntoFirebaseStorage() {
         ProgressUtils.showKProgressDialog(context,"Updating...");
-        String filename= UUID.randomUUID().toString();
+//        String filename= UUID.randomUUID().toString();
+        String filename="profile_picture_"+CommonData.firebaseCurrentUserUid;
         final StorageReference storageReference=FirebaseStorage.getInstance().getReference("userProfileImages/"+filename);
         storageReference.putFile(choosenImageUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
             @Override

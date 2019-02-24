@@ -30,6 +30,7 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.wayforlife.Activities.HomeActivity;
 import com.wayforlife.Activities.LoginActivity;
 import com.wayforlife.Common.CommonData;
+import com.wayforlife.Common.NetworkCheck;
 import com.wayforlife.GlobalStateApplication;
 import com.wayforlife.Models.User;
 import com.wayforlife.R;
@@ -98,25 +99,29 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 
             case R.id.loginButton:
                 //if entered details are valid then we will sign in the user.
-                if (isDetailsValid()) {
-                    ProgressUtils.showKProgressDialog(loginActivity,"Login processing...");
-                    FirebaseDatabase.getInstance().getReference("Admin").addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            for(DataSnapshot itemSnapshot:dataSnapshot.getChildren()){
-                                if(itemSnapshot.getValue(String.class).equalsIgnoreCase(loginEmail)){
-                                    isUserAdmin=true;
-                                    break;
+                if(NetworkCheck.isNetworkAvailable(context)) {
+                    if (isDetailsValid()) {
+                        ProgressUtils.showKProgressDialog(loginActivity, "Login processing...");
+                        FirebaseDatabase.getInstance().getReference("Admin").addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                for (DataSnapshot itemSnapshot : dataSnapshot.getChildren()) {
+                                    if (itemSnapshot.getValue(String.class).equalsIgnoreCase(loginEmail)) {
+                                        isUserAdmin = true;
+                                        break;
+                                    }
                                 }
+                                signIn();
                             }
-                            signIn();
-                        }
 
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                        }
-                    });
+                            }
+                        });
+                    }
+                }else{
+                    Toast.makeText(context,getString(R.string.no_internet_connection),Toast.LENGTH_SHORT).show();
                 }
                 break;
             case R.id.forgetPasswordTextView:

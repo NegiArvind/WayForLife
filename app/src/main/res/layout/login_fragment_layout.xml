@@ -87,11 +87,12 @@
 
         <Button
             android:id="@+id/loginButton"
-            android:layout_width="match_parent"
-            android:layout_marginStart="80sp"
-            android:layout_marginEnd="80sp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="4sp"
+            android:paddingStart="70sp"
+            android:paddingEnd="70sp"
+            android:paddingTop="6sp"
+            android:paddingBottom="6sp"
             android:layout_below="@id/passwordRelativeLayout"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="40sp"

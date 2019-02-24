@@ -19,18 +19,18 @@
 
     <Button
         android:id="@+id/loginButton"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/imageView"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginStart="80sp"
+        android:layout_centerHorizontal="true"
         android:layout_marginTop="90dp"
-        android:padding="4sp"
+        android:paddingStart="70sp"
+        android:paddingEnd="70sp"
+        android:paddingTop="6sp"
+        android:paddingBottom="6sp"
         android:textStyle="bold"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
         android:background="@drawable/button_gradient_round_shape"
-        android:layout_marginEnd="80sp"
         android:textColor="@color/md_white_1000"
         android:text="@string/loginButtonText" />
 
@@ -44,8 +44,8 @@
         android:layout_alignParentEnd="true"
         android:layout_below="@id/loginButton"
         android:layout_marginTop="32sp"
-        android:layout_marginStart="20sp"
-        android:layout_marginEnd="20sp"
+        android:layout_marginStart="30sp"
+        android:layout_marginEnd="30sp"
         android:orientation="horizontal">
 
         <View
@@ -76,15 +76,16 @@
 
     <Button
         android:id="@+id/signUpButton"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/orLinearLayout"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
+        android:layout_centerHorizontal="true"
         android:layout_marginStart="80sp"
         android:layout_marginTop="32sp"
-        android:layout_marginEnd="80sp"
-        android:padding="4sp"
+        android:paddingStart="70sp"
+        android:paddingEnd="70sp"
+        android:paddingTop="6sp"
+        android:paddingBottom="6sp"
         android:textStyle="bold"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
         android:textColor="@color/md_white_1000"

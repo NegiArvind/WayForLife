@@ -10,9 +10,11 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.applandeo.materialcalendarview.CalendarView;
@@ -22,9 +24,11 @@ import com.applandeo.materialcalendarview.listeners.OnDayClickListener;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.wayforlife.Activities.HomeActivity;
 import com.wayforlife.Common.CommonData;
+import com.wayforlife.Common.NetworkCheck;
 import com.wayforlife.GlobalStateApplication;
 import com.wayforlife.Models.MyEvent;
 import com.wayforlife.R;
@@ -45,6 +49,7 @@ public class EventFragment extends Fragment {
     private HashMap<String,String> myEventKeyHashMap; //key is date and value is eventKeyId
     private ChildEventListener eventChildEventListener;
     private HomeActivity homeActivity;
+    private ProgressBar eventProgressBar;
 
     @Nullable
     @Override
@@ -52,6 +57,9 @@ public class EventFragment extends Fragment {
         View view=inflater.inflate(R.layout.event_fragment_layout,container,false);
         context=getContext();
         calendarView=view.findViewById(R.id.calenderView);
+        eventProgressBar=view.findViewById(R.id.eventProgressBar);
+
+
         calendar=Calendar.getInstance();
 
         homeActivity= (HomeActivity) getActivity();
@@ -60,7 +68,16 @@ public class EventFragment extends Fragment {
         myEventKeyHashMap=new HashMap<>();
         eventDays=new ArrayList<>();
 
-        getAllTheEventsAndSetIntoCalender();
+        if(NetworkCheck.isNetworkAvailable(context)) {
+            checkAnyEventsAndThenFetch();
+        }else{
+            if(eventProgressBar!=null) {
+                eventProgressBar.setVisibility(View.GONE);
+            }
+            Toast toast=Toast.makeText(context,getString(R.string.no_internet_connection),Toast.LENGTH_SHORT);
+            toast.setGravity(Gravity.CENTER,0,0);
+            toast.show();
+        }
 
         try {
             calendarView.setDate(calendar.getTime());
@@ -102,7 +119,27 @@ public class EventFragment extends Fragment {
             dialogFragment.show(fragmentTransaction,tag);
         }
     }
+    private void checkAnyEventsAndThenFetch(){
+        FirebaseDatabase.getInstance().getReference().addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.hasChild("Events")){
+                    getAllTheEventsAndSetIntoCalender();
+                }else{
+                    Toast.makeText(context,"There is no any event",Toast.LENGTH_SHORT).show();
+                    calendarView.setVisibility(View.VISIBLE);
+                    if(eventProgressBar!=null){
+                        eventProgressBar.setVisibility(View.GONE);
+                    }
+                }
+            }
 
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
     private void getAllTheEventsAndSetIntoCalender() {
         eventChildEventListener=GlobalStateApplication.eventsDatabaseReference.addChildEventListener(new ChildEventListener() {
             @Override
@@ -162,6 +199,10 @@ public class EventFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 calendarView.setEvents(eventDays);
+                calendarView.setVisibility(View.VISIBLE);
+                if(eventProgressBar!=null){
+                    eventProgressBar.setVisibility(View.GONE);
+                }
             }
 
             @Override
@@ -186,7 +227,9 @@ public class EventFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        GlobalStateApplication.eventsDatabaseReference.removeEventListener(eventChildEventListener);
+        if(eventChildEventListener!=null) {
+            GlobalStateApplication.eventsDatabaseReference.removeEventListener(eventChildEventListener);
+        }
 //        Toast.makeText(context,"Child event listener removed",Toast.LENGTH_SHORT).show();
     }
 

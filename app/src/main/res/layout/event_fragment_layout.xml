@@ -4,10 +4,17 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <ProgressBar
+        android:id="@+id/eventProgressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"/>
+
     <com.applandeo.materialcalendarview.CalendarView
         android:id="@+id/calenderView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:visibility="invisible"
         app:headerColor="@color/colorPrimary"
         android:layout_centerInParent="true"/>
 

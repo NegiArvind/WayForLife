@@ -18,6 +18,9 @@ public class CommonData {
     public static String donateUrl="http://m-lp.co/wayoflif/";
     public static String requestBloodUrl="http://www.friends2support.org/";
     public static String aboutUsUrl="http://wayforlife.org/about/";
+    public static String instagramProfileUrl="https://instagram.com/wayforlifeofficial?utm_source=ig_profile_share&igshid=i0juf2yxo3lr";
+    public static String facebookProfileUrl="https://www.facebook.com/wayforlifeofficial";
+    public static String twitterProfileUrl="https://twitter.com/wayforlifeindia?s=09";
 
     public static String getCurrentTime() {
         Calendar calendar = Calendar.getInstance();

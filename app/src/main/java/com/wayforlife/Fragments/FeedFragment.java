@@ -35,6 +35,7 @@ import com.squareup.picasso.Picasso;
 import com.wayforlife.Activities.HomeActivity;
 import com.wayforlife.Adapters.FeedCustomRecyclerViewArrayAdapter;
 import com.wayforlife.Common.CommonData;
+import com.wayforlife.Common.NetworkCheck;
 import com.wayforlife.GlobalStateApplication;
 import com.wayforlife.Models.Post;
 import com.wayforlife.Models.User;
@@ -76,7 +77,6 @@ public class FeedFragment extends Fragment implements View.OnClickListener {
         postFloatingActionButton=view.findViewById(R.id.postFloatingActionButton);
         feedProgressBar=view.findViewById(R.id.feedProgressBar);
 
-
         feedRecyclerView=view.findViewById(R.id.feedRecyclerView);
         linearLayoutManager=new LinearLayoutManager(context);
         feedRecyclerView.setHasFixedSize(true);
@@ -87,8 +87,16 @@ public class FeedFragment extends Fragment implements View.OnClickListener {
         pollFloatingActionButton.setOnClickListener(this);
         postFloatingActionButton.setOnClickListener(this);
 
-        checkIfFeedExistIfExistThenFetchAllFeeds();
-
+        if(NetworkCheck.isNetworkAvailable(context)) {
+            checkIfFeedExistIfExistThenFetchAllFeeds();
+        }else{
+            if(feedProgressBar!=null) {
+                feedProgressBar.setVisibility(View.GONE);
+            }
+            Toast toast=Toast.makeText(context,getString(R.string.no_internet_connection),Toast.LENGTH_SHORT);
+            toast.setGravity(Gravity.CENTER,0,0);
+            toast.show();
+        }
         return view;
     }
 
@@ -98,7 +106,9 @@ public class FeedFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if(!dataSnapshot.hasChild("Feeds")) {
-                    feedProgressBar.setVisibility(View.GONE);
+                    if(feedProgressBar!=null) {
+                        feedProgressBar.setVisibility(View.GONE);
+                    }
                     Toast toast = Toast.makeText(context, "There is no any feed", Toast.LENGTH_SHORT);
                     toast.setGravity(Gravity.CENTER, 0, 0);
                     toast.show();
@@ -120,7 +130,9 @@ public class FeedFragment extends Fragment implements View.OnClickListener {
                 GlobalStateApplication.feedsDatabaseReference.orderByChild("isPost").equalTo(isPost)) {
             @Override
             protected void populateViewHolder(FeedViewHolder feedViewHolder, Post post, int position) {
-                feedProgressBar.setVisibility(View.GONE);
+                if(feedProgressBar!=null) {
+                    feedProgressBar.setVisibility(View.GONE);
+                }
                 bindTheDataWithViewHolder(feedViewHolder,post,position);
             }
         };
@@ -257,7 +269,7 @@ public class FeedFragment extends Fragment implements View.OnClickListener {
                 }
             });
         } else {
-            feedViewHolder.feedUserImageView.setImageResource(R.drawable.person_image);
+            feedViewHolder.feedUserImageView.setImageResource(R.drawable.circular_person_image_background);
             if(feedViewHolder.feedUserImageViewProgressBar!=null) {
                 feedViewHolder.feedUserImageViewProgressBar.setVisibility(View.GONE);
             }
